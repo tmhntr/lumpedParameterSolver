@@ -23,6 +23,7 @@ protected:
     int nInputs = 32;
     int nAlgebraic = 32;
     int nP;
+    
 public:
     double * algebraic;
     

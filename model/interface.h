@@ -12,15 +12,15 @@
 #include <vector>
 
 class model {
-protected:
-    int NEQ ;
-    std::string name;
+private:
+    std::string _name;
 public:
-    /* This function is the main functionality of the model. It takes in t (time) and y[] as arguments and populates array DY with the dydt values */
+    model() { _name = "name";}
+    model(std::string name) { _name = name; }
+    std::string getName() { return _name; }
+
     virtual void updateAlgebraic(double t, double y[]) = 0;
     virtual void getDY(double t, double y[], double * DY) = 0;
-    int getNEQ() { return NEQ; }
-    std::string getName() { return name; }
 
 };
 
