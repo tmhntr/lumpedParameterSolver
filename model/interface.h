@@ -14,22 +14,25 @@
 
 class model {
 private:
-    int _neq;
+    int _neq = 0;
     std::string _name;
 public:
-    std::string * stateNames;
+    std::vector<std::string> stateNames;
 
     model()
     {
         _name = "name";
     }
     model(std::string name) { _name = name; }
+    
     std::string getName() { return _name; }
 
     virtual void updateAlgebraic(double t, double y[]) = 0;
     virtual void getDY(double t, double y[], double * DY) = 0;
     
     void setNEQ(int neq){ _neq = neq; }
+    int getNEQ(){ return _neq; }
+
     void setStateName(int index, std::string stateName)
     {
         if (index < getNEQ())
@@ -40,8 +43,6 @@ public:
             throw (index);
         }
     }
-    
-    int getNEQ(){ return _neq; }
     std::string getStateName(int index)
     {
         if (index >= getNEQ())

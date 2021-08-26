@@ -14,7 +14,7 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "wrapper.h"
+//#include "wrapper.h"
 
 class submodule: public model {
 private:
@@ -53,7 +53,7 @@ public:
         algebraic = (double *) calloc(_nAlgebraic, sizeof(double));
         shared = (double **) calloc(_nShared, sizeof(double *));
         
-        stateNames = (std::string *) calloc(getNEQ(), sizeof(std::string));
+        stateNames.resize(getNEQ());
         algebraicNames = (std::string *) calloc(_nAlgebraic, sizeof(std::string));
         
         inputNames = (std::string *) calloc(_nInputs, sizeof(std::string));
@@ -84,7 +84,7 @@ public:
         else
         {
             std::cout << index << " outside of parameter array range." << std::endl;
-            throw (index);
+            throw (1);
         }
     }
     
@@ -95,7 +95,7 @@ public:
         else
         {
             std::cout << index << " outside of input array range." << std::endl;
-            throw (index);
+            throw (1);
         }
     }
     
@@ -106,7 +106,7 @@ public:
         else
         {
             std::cout << index << " outside of algebraic array range." << std::endl;
-            throw (index);
+            throw (1);
         }
     }
     
@@ -118,7 +118,7 @@ public:
         else
         {
             std::cout << index << " outside of shared array range." << std::endl;
-            throw (index);
+            throw (1);
         }
     }
     
@@ -129,7 +129,7 @@ public:
         else
         {
             std::cout << index << " outside of inputs array range." << std::endl;
-            throw (index);
+            throw (1);
         }
     }
     
@@ -140,7 +140,7 @@ public:
         else
         {
             std::cout << index << " outside of shared array range." << std::endl;
-            throw (index);
+            throw (1);
         }
     }
     
@@ -151,7 +151,7 @@ public:
         else
         {
             std::cout << index << " outside of algebraic array range." << std::endl;
-            throw (index);
+            throw (1);
         }
     }
     
@@ -173,7 +173,7 @@ public:
         if (index >= _nP)
         {
             std::cout << index << " outside of parameter array range." << std::endl;
-            throw (index);
+            throw (1);
         }
         else
             return P[index];
@@ -185,7 +185,7 @@ public:
         if (index >= _nShared)
         {
             std::cout << index << " outside of shared array range." << std::endl;
-            throw (index);
+            throw (1);
         }
         else
             return sharedNames[index];
@@ -196,7 +196,7 @@ public:
         if (index >= _nInputs)
         {
             std::cout << index << " outside of input array range." << std::endl;
-            throw (index);
+            throw (1);
         } else
             return inputIndex[index];
         
@@ -222,8 +222,8 @@ public:
     }
     std::vector<std::string> getStateNameList()
     {
-        std::vector<std::string> nameList (stateNames, stateNames + _neq);
-        return nameList;
+//        std::vector<std::string> nameList (stateNames, stateNames + _neq);
+        return stateNames;
     }
     
         
@@ -233,7 +233,7 @@ public:
         if (index >= _nAlgebraic)
         {
             std::cout << index << " outside of algebraic array range." << std::endl;
-            throw (index);
+            throw (1);
         } else
             return (&algebraic[index]);
     }
@@ -294,6 +294,11 @@ public:
                     setII(i, c);
                 }
                 c++;
+            }
+            if (!foundStateVar)
+            {
+                std::cout << "Error: " << inputNames[i] << " not found in statevars. " << std::endl;
+                throw (1);
             }
         }
     }
