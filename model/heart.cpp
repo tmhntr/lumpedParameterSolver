@@ -5,8 +5,8 @@
 //  Created by Tim  Hunter on 2021-08-20.
 //
 
-#include "submodule.h"
-#include "heart.h"
+//#include "submodule.hpp"
+#include "heart.hpp"
 #include <math.h>
 
 //class heart: public submodule {

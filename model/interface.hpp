@@ -1,12 +1,12 @@
 //
-//  interface.h
+//  interface.hpp
 //  model
 //
 //  Created by Tim  Hunter on 2021-08-16.
 //
 
-#ifndef interface_h
-#define interface_h
+#ifndef interface_hpp
+#define interface_hpp
 
 #include <iostream>
 #include <string>
@@ -83,4 +83,4 @@ class config {
 };
 
 
-#endif /* interface_h */
+#endif /* interface_hpp */

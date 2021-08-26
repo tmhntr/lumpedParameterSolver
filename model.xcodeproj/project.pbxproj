@@ -31,12 +31,12 @@
 		0F98856526D8016A00D7FA72 /* wrapper.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = wrapper.hpp; sourceTree = "<group>"; };
 		0FC08F7726CAE1BB001C52FB /* model */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = model; sourceTree = BUILT_PRODUCTS_DIR; };
 		0FC08F7A26CAE1BC001C52FB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0FC08F8126CAE1E2001C52FB /* interface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = interface.h; sourceTree = "<group>"; };
+		0FC08F8126CAE1E2001C52FB /* interface.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = interface.hpp; sourceTree = "<group>"; };
 		0FC314E226D081D30044B1CC /* RCR.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RCR.cpp; sourceTree = "<group>"; };
 		0FC314E426D08DAC0044B1CC /* heart.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = heart.cpp; sourceTree = "<group>"; };
-		0FC314E626D08F140044B1CC /* RCR.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCR.h; sourceTree = "<group>"; };
+		0FC314E626D08F140044B1CC /* RCR.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = RCR.hpp; sourceTree = "<group>"; };
 		0FC314E726D0A0310044B1CC /* heart.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = heart.hpp; sourceTree = "<group>"; };
-		0FC314EA26D1AB4F0044B1CC /* submodule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = submodule.h; sourceTree = "<group>"; };
+		0FC314EA26D1AB4F0044B1CC /* submodule.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = submodule.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,12 +73,12 @@
 				0FC08F7A26CAE1BC001C52FB /* main.cpp */,
 				0F98856226D8008900D7FA72 /* sdsolver.cpp */,
 				0F98856326D8008900D7FA72 /* sdsolver.hpp */,
-				0FC314EA26D1AB4F0044B1CC /* submodule.h */,
+				0FC314EA26D1AB4F0044B1CC /* submodule.hpp */,
 				0FC314E426D08DAC0044B1CC /* heart.cpp */,
 				0FC314E226D081D30044B1CC /* RCR.cpp */,
-				0FC314E626D08F140044B1CC /* RCR.h */,
+				0FC314E626D08F140044B1CC /* RCR.hpp */,
 				0FC314E726D0A0310044B1CC /* heart.hpp */,
-				0FC08F8126CAE1E2001C52FB /* interface.h */,
+				0FC08F8126CAE1E2001C52FB /* interface.hpp */,
 			);
 			path = model;
 			sourceTree = "<group>";

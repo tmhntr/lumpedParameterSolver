@@ -1,5 +1,5 @@
 //
-//  wrapper.h
+//  wrapper.hpp
 //  model
 //
 //  Created by Tim  Hunter on 2021-08-20.
@@ -10,8 +10,8 @@
 
 #include <stdio.h>
 #include <iostream>
-#include "interface.h"
-#include "submodule.h"
+#include "interface.hpp"
+#include "submodule.hpp"
 #include <math.h>
 #include <string>
 #include <vector>
@@ -101,6 +101,22 @@ public:
             mdlPtr->getDY(t, y, DYPtr);
             DYPtr+=mdlPtr->getNEQ();
         }
+    }
+    
+    
+    void link(submodule * mdl, int index)
+    {
+        bool success = false;
+        for (int k = 0; k < models.size(); k++)
+        {
+            if(mdl->link(index, models[k], mdl->getSharedName(index)))
+                success = true;
+        }
+        if(!success)
+        {
+            throw (mdl->getSharedName(index));
+        }
+        
     }
 };
 

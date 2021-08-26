@@ -1,15 +1,15 @@
 //
-//  RCR.h
+//  RCR.hpp
 //  model
 //
 //  Created by Tim  Hunter on 2021-08-20.
 //
 
-#ifndef RCR_h
-#define RCR_h
+#ifndef RCR_hpp
+#define RCR_hpp
 
 #include <stdio.h>
-#include "submodule.h"
+#include "submodule.hpp"
 #include <math.h>
 #include <map>
 #include <vector>
@@ -29,4 +29,4 @@ public:
     void getDY(double t, double y[], double * DY);
 };
 
-#endif /* RCR_h */
+#endif /* RCR_hpp */

@@ -5,7 +5,7 @@
 //  Created by Tim  Hunter on 2021-08-20.
 //
 
-#include "RCR.h"
+#include "RCR.hpp"
 
 /*
 The following is a basic implementation of an rcr windkessel compartment. By convention the shared input is flow out, and state inputs are upstream and present pressure. 

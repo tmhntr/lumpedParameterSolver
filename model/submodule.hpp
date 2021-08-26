@@ -1,20 +1,19 @@
 //
-//  submodule.h
+//  submodule.hpp
 //  model
 //
 //  Created by Tim  Hunter on 2021-08-21.
 //
 
-#ifndef submodule_h
-#define submodule_h
+#ifndef submodule_hpp
+#define submodule_hpp
 
 #include <stdio.h>
-#include "interface.h"
+#include "interface.hpp"
 #include <math.h>
 #include <string>
 #include <map>
 #include <vector>
-//#include "wrapper.h"
 
 class submodule: public model {
 private:
@@ -87,6 +86,17 @@ public:
             throw (1);
         }
     }
+    double getParameter(int index)
+    {
+        if (index >= _nP)
+        {
+            std::cout << index << " outside of parameter array range." << std::endl;
+            throw (1);
+        }
+        else
+            return P[index];
+        
+    }
     
     void setII(int index, int value)
     {
@@ -98,6 +108,28 @@ public:
             throw (1);
         }
     }
+    int getII(int index)
+    {
+        if (index >= _nInputs)
+        {
+            std::cout << index << " outside of input array range." << std::endl;
+            throw (1);
+        } else
+            return inputIndex[index];
+        
+    }
+    
+    void setShared(int index, double * sharedPtr)
+    {
+        if (index < _nShared)
+            shared[index] = sharedPtr;
+        else
+        {
+            std::cout << index << " outside of shared array range." << std::endl;
+            throw (1);
+        }
+    }
+    double getSharedVal(int i) { return *(shared[i]); }
     
     void setAlgebraic(int index, double value)
     {
@@ -111,16 +143,7 @@ public:
     }
     
     // this function sets the value of shared[index] to the double pointer sharedPtr. Used for linking
-    void setShared(int index, double * sharedPtr)
-    {
-        if (index < _nShared)
-            shared[index] = sharedPtr;
-        else
-        {
-            std::cout << index << " outside of shared array range." << std::endl;
-            throw (1);
-        }
-    }
+    
     
     void setInputName(int index, std::string inputName)
     {
@@ -155,30 +178,6 @@ public:
         }
     }
     
-//    void setStateName(int index, std::string stateName)
-//    {
-//        if (index < getNEQ())
-//            stateNames[index] = stateName;
-//        else
-//        {
-//            std::cout << index << " outside of stateName array range." << std::endl;
-//            throw (index);
-//        }
-//    }
-    
-    
-    
-    double getParameter(int index)
-    {
-        if (index >= _nP)
-        {
-            std::cout << index << " outside of parameter array range." << std::endl;
-            throw (1);
-        }
-        else
-            return P[index];
-        
-    }
     
     std::string getSharedName(int index)
     {
@@ -191,20 +190,7 @@ public:
             return sharedNames[index];
     }
     
-    int getII(int index)
-    {
-        if (index >= _nInputs)
-        {
-            std::cout << index << " outside of input array range." << std::endl;
-            throw (1);
-        } else
-            return inputIndex[index];
-        
-    }
-    
-    double getSharedVal(int i) { return *(shared[i]); }
-    
-    
+
     std::vector<std::string> getInputNameList()
     {
         std::vector<std::string> nameList (inputNames, inputNames + _nInputs);
@@ -305,21 +291,4 @@ public:
     
 };
 
-//class linker {
-//private:
-//    submodule _source;
-//    std::string * parameters;
-//public:
-//    linker(submodule source, std::string parameter[])
-//    {
-//        _source = source;
-//        int c = 0;
-//        while (parameter[c].size())
-//        {
-//
-//        }
-//
-//    }
-//};
-
-#endif /* submodule_h */
+#endif /* submodule_hpp */

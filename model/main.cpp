@@ -6,9 +6,9 @@
 //
 
 #include <iostream>
-#include "RCR.h"
-#include "heart.h"
-#include "wrapper.h"
+#include "RCR.hpp"
+#include "heart.hpp"
+#include "wrapper.hpp"
 
 
 using namespace std;
@@ -71,8 +71,9 @@ int main(int argc, const char * argv[]) {
     std::vector<std::string> outputNames {"P_a"};
     std::vector<double> parameters {0.05, 0.9};
 
-    
-    submodule * artery = new RCR("Arteries", sharedNames, inputNames, algebraicNames, outputNames, parameters);
+    std::vector<submodule *> modules;
+//    modules.push_back(new RCR("Arteries", {"Q_v"}, {"P_lv", "P_a"}, {"Q_a"}, {"P_a"}, {0.05, 0.9}));
+//    submodule * artery = new RCR("Arteries", {"Q_v"}, {"P_lv", "P_a"}, {"Q_a"}, {"P_a"}, {0.05, 0.9});
     
     sharedNames = {"Q_ri"};
     inputNames = {"P_a", "P_v"};
@@ -98,8 +99,11 @@ int main(int argc, const char * argv[]) {
     
     submodule * hrt = new heart(sharedNames, inputNames, algebraicNames, outputNames, parameters);
     
-
-    wrapper * mdl = new wrapper(std::vector<submodule *> {hrt, artery, vein, pulm});
+    modules.push_back(hrt);
+    modules.push_back(new RCR("Arteries", {"Q_v"}, {"P_lv", "P_a"}, {"Q_a"}, {"P_a"}, {0.05, 0.9}));
+    modules.push_back(vein);
+    modules.push_back(pulm);
+    wrapper * mdl = new wrapper(modules);
     
 //    mdl->addModel(hrt);
 //    mdl->addModel(artery);
@@ -122,31 +126,29 @@ int main(int argc, const char * argv[]) {
 //    hrt->assignInputIndices(mdl->stateNames, mdl->getNEQ());
     
     // linker
-    bool success = false;
+//    bool success = false;
     for (int i = 0; i < mdl->getModelList().size(); i++)
     {
 //        vector<string> list = mdl->getModel(i)->getSharedNameList();
         for (int j = 0; j < mdl->getModel(i)->getSharedNameList().size(); j++)
         {
-            for (int k = 0; k < mdl->getModelList().size(); k++)
+            try
             {
-                if(mdl->getModel(i)->link(j, mdl->getModel(k), mdl->getModel(i)->getSharedName(j)))
-                    success = true;
+                mdl->link(mdl->getModel(i), j);
+            } catch (string e) {
+                cout << "Could not find algebraic parameter " << e << " needed for module " << mdl->getModel(i)->getName() << "." << endl;
+                return 1;
             }
-            if(!success)
-            {
-                cout << "Could not find shared input " << mdl->getModel(i)->getSharedName(j) << " for module " << mdl->getModel(i)->getName() << endl;
-                throw (mdl->getModel(i)->getSharedName(j));
-            }
+//            link(mdl->getModel(i), j);
         }
     }
     
 //    artery->link(0, vein, "Q_v");
 //    vein->link(0, hrt, "Q_ri");
-//    
+//
 //    hrt->link(0, pulm, "Q_pulm");
 //    pulm->link(0, hrt, "Q_li");
-//    
+//
 //    hrt->link(1, artery, "Q_a");
 
     
