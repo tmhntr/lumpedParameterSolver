@@ -7,6 +7,10 @@
 
 #include "RCR.h"
 
+/*
+The following is a basic implementation of an rcr windkessel compartment. By convention the shared input is flow out, and state inputs are upstream and present pressure. 
+ */
+
 void RCR::updateAlgebraic(double t, double y[])
 {
     // Inputs
@@ -32,13 +36,18 @@ void RCR::updateAlgebraic(double t, double y[])
 void RCR::getDY(double t, double y[], double * DY)
 {
     // load algebraic parameters
-    double q_in = algebraic[0];
+    double q_in = 0;
+    for (int i = 0; i < nInlets; i++)
+        q_in += algebraic[i];
     
     // Constant Parameters
     double C = P[1];
     
     // load shared algebraic parameters
-    double q_out = *shared[0]; // shared[0] is outlet flow
+//    double q_out = *shared[0]; // shared[0] is outlet flow
+    double q_out = 0;
+    for (int i = 0; i < nOutlets; i++)
+        q_out += getSharedVal(i);
     
     DY[0]   = (1.0 / C) * ( q_in - q_out ); // right atrial pressure
 }

@@ -5,25 +5,32 @@
 //  Created by Tim  Hunter on 2021-08-20.
 //
 
+#include "submodule.h"
 #include "heart.h"
+#include <math.h>
+
+//class heart: public submodule {
+//    void updateAlgebraic(double t, double y[]);
+//    void getDY(double t, double y[], double * DY);
+//};
 
 void heart::updateAlgebraic(double t, double y[])
 {
     // now load parameters in
-    double RR = 1.0;
-    double Esys_lv = 1.0;
-    double Edias_lv = 1.0;
-    double Esys_rv = 1.0;
-    double Edias_rv = 1.0;
-    double Esys_la = 1.0;
-    double Edias_la = 1.0;
-    double Esys_ra = 1.0;
-    double Edias_ra = 1.0;
+    double RR = P[0];
+    double Esys_lv = P[1];
+    double Edias_lv = P[2];
+    double Esys_rv = P[3];
+    double Edias_rv = P[4];
+    double Esys_la = P[5];
+    double Edias_la = P[6];
+    double Esys_ra = P[7];
+    double Edias_ra = P[8];
 
-    double R_ri = 1.0;
-    double R_rav = 1.0;
-    double R_li = 1.0;
-    double R_lav = 1.0;
+    double R_ri = P[9];
+    double R_rav = P[10];
+    double R_li = P[11];
+    double R_lav = P[12];
 
     // Inputs
     double p_ra = y[inputIndex[4]];
@@ -172,8 +179,8 @@ void heart::getDY(double t, double y[], double * DY)
     double DELTAT = 0.01;
     
     // load shared algebraic values
-    double q_ro = *shared[0];
-    double q_lo = *shared[1];
+    double q_ro = getSharedVal(0);
+    double q_lo = getSharedVal(1);
     
     DY[0]   = (C_ra_1 - C_ra_0)/DELTAT;  // Right Atrial Compliance
     DY[1]   = (C_rv_1 - C_rv_0)/DELTAT;  // Right Ventricle Compliance
