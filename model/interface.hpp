@@ -56,27 +56,39 @@ public:
 
 };
 
+class printer {
+public:
+    virtual void print() = 0;
+    virtual void setSolver(void * slvr) = 0;
+};
+
 class solver {
     model * mdl;
+    printer * _printer;
 public:
     solver() {}
     solver(model * m): solver() { setModel(m); }
     
-    void setModel(model * m)
-    {
-        mdl = m;
-    }
-    
+    void setModel(model * m) { mdl = m; }
     model * getModel() { return mdl; }
+    
+    void setPrinter(printer * p)
+    {
+        _printer = p;
+        _printer->setSolver(this);
+    }
+    printer * getPrinter() { return _printer; }
+    
+    virtual double getY(int index) = 0;
+    virtual double getT() = 0;
+    
+    void print() { _printer->print(); }
     
     virtual void solveStep(double t) = 0;
     
 };
 
-class printer {
-public:
-    virtual void print(double t, double * y) = 0;
-};
+
 class config {
     double abstol, reltol, t_init, t_stop, print_interval, deltat;
     

@@ -9,57 +9,11 @@
 #include "RCR.hpp"
 #include "heart.hpp"
 #include "wrapper.hpp"
+#include "sdsolver.hpp"
+#include "basicprinter.hpp"
 
 
 using namespace std;
-
-class basicSolver: public solver {
-private:
-//    model * mdl;
-//    int NEQ = 3;
-    double * DY;
-    double * y;
-    double deltat = 0.01;
-public:
-    basicSolver() : solver() {}
-    basicSolver(model * m) : solver(m)
-    {
-        DY = (double *) calloc(getModel()->getNEQ(), sizeof(double));
-        y = (double *) calloc(getModel()->getNEQ(), sizeof(double));
-    }
-    basicSolver(model * m, double y1[]) : basicSolver(m)
-    {
-        for (int i = 0; i < getModel()->getNEQ(); i++)
-        {
-            y[i] = y1[i];
-        }
-    }
-    
-    void solveStep(double t) {
-        getModel()->updateAlgebraic(t, y);
-        getModel()->getDY(t, y, DY);
-        for (int i = 0; i < getModel()->getNEQ(); i++)
-        {
-            y[i] = y[i] + deltat * DY[i];
-        }
-    }
-    
-    double getY(int index) { return y[index]; }
-    double getDT() { return deltat; }
-    
-    void print(double t)
-    {
-        cout<<t;
-        for(int i = 0; i<getModel()->getNEQ(); i++)
-        {
-            cout<<"\t\t";
-            cout<<y[i];
-        }
-        cout<<endl;
-    }
-};
-
-
 
 int main(int argc, const char * argv[]) {
     // insert code here...
@@ -154,12 +108,17 @@ int main(int argc, const char * argv[]) {
     
 //    cout << m1->getName() << "input indices: " << m1->getII(0) << ", " << m1->getII(1) << endl;
 
-    double y[] = {2.0, 20.0, 1.0, 10.0, 1.0, 3.0, 8.0, 13.0, 90.0, 7.0, 15.0};
-    basicSolver * slvr = new basicSolver(mdl, y);
+    double y0[] = {2.0, 20.0, 1.0, 10.0, 1.0, 3.0, 8.0, 13.0, 90.0, 7.0, 15.0};
+    double reltol = 1e-6;
+    double abstol[] = {1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6};
+    sdsolver * slvr = new sdsolver(mdl, y0, reltol, abstol);
     
-    for (double t = 0.0; t <= 10.0; t+=slvr->getDT())
+    slvr->setPrinter(new basicprinter((void *) slvr));
+    
+//    slvr->print();
+    for (double t = 0.01; t <= 10.0; t+=slvr->getDeltaT())
     {
-        slvr->print(t);
+        slvr->print();
         slvr->solveStep(t);
     }
     
