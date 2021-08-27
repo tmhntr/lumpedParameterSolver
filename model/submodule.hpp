@@ -12,51 +12,86 @@
 #include "interface.hpp"
 #include <math.h>
 #include <string>
-#include <map>
 #include <vector>
+
+class linker;
+
 
 class submodule: public model {
 private:
     int _nP;
     int _nInputs;
-    int _nShared;
+    int _nLinks;
     int _nAlgebraic;
     int _neq;
+    
+    int updateInputIndex(std::vector<std::string> statevars)
+    {
+        bool foundStateVar = false;
+        int missing = 0;
+        int c = 0;
         
-protected:
+        for (int i = 0; i < _nInputs; i++)
+        {
+            c = 0;
+            foundStateVar = false;
+            while (!foundStateVar && c < statevars.size())
+            {
+                
+                if (inputNames[i] == statevars[c])
+                {
+                    foundStateVar = true;
+                    setInputIndex(i, c);
+                }
+                c++;
+            }
+            if (!foundStateVar)
+            {
+                std::cout << "Error: " << inputNames[i] << " not found in statevars. " << std::endl;
+//                throw (1);
+                missing++;
+            }
+        }
+        return missing;
+    }
+    
+    int link(std::vector<submodule *> modlist);
+    
     double * P;
     int * inputIndex;
-    double ** shared; // algebraic parameters fetched from other functions
+    linker ** links;
     double * algebraic;
-            
-public:
-    // following are names of model inputs, outputs, and working variables. They can be used in model setup, or to reference specific values of the model as the correspond to the values stored.
+    
+    /*
+     Names.
+     The following are used so set up the model, properly associating submodules to the required shared and input values
+     */
     std::string * inputNames;
     std::string * sharedNames;
     std::string * algebraicNames;
-//    std::string * stateNames;
-    
-    
-    
-    submodule(std::string n, int neq, int np, int nIn, int nAlgebraic, int nShared) : model(n)
+   
+public:
+    // Constructors and destructors
+    submodule(std::string n, int neq, int np, int nIn, int nAlgebraic, int nLinks) : model(n)
     {
         setNEQ(neq);
         _nP = np;
         _nInputs = nIn;
         _nAlgebraic = nAlgebraic;
-        _nShared = nShared;
+        _nLinks = nLinks;
         
         
         P = (double *) calloc(_nP, sizeof(double));
         inputIndex = (int *) calloc(_nInputs, sizeof(int));
         algebraic = (double *) calloc(_nAlgebraic, sizeof(double));
-        shared = (double **) calloc(_nShared, sizeof(double *));
+//        shared = (double **) calloc(_nShared, sizeof(double *));
+        links = (linker **) calloc(_nLinks, sizeof(linker *));
         
         stateNames.resize(getNEQ());
         algebraicNames = (std::string *) calloc(_nAlgebraic, sizeof(std::string));
         
         inputNames = (std::string *) calloc(_nInputs, sizeof(std::string));
-        sharedNames = (std::string *) calloc(_nShared, sizeof(std::string));
+        sharedNames = (std::string *) calloc(_nLinks, sizeof(std::string));
     }
     
     submodule(std::string n, std::vector<std::string> sharedNames, std::vector<std::string> inputNames, std::vector<std::string> algebraicNames, std::vector<std::string> outputNames, std::vector<double> parameters) : submodule(n, (int) outputNames.size(), (int) parameters.size(), (int) inputNames.size(), (int) algebraicNames.size(), (int) sharedNames.size())
@@ -70,14 +105,15 @@ public:
         for (int i = 0; i < outputNames.size(); i++)
             setStateName(i, outputNames[i]);
         for (int i = 0; i < parameters.size(); i++)
-            setParameter(i, parameters[i]);
+            setP(i, parameters[i]);
     }
+    virtual ~submodule(){}
     
-    
-    
-    void setParameter(int index, double value)
-    {
+    // getters and setters; arrays will have getters and setters for each index as well as the array pointer.
         
+//  Parameter Array
+    void setP(int index, double value)
+    {
         if (index < _nP)
             P[index] = value;
         else
@@ -86,7 +122,17 @@ public:
             throw (1);
         }
     }
-    double getParameter(int index)
+    void setP(std::vector<double> P_vec)
+    {
+        if (P_vec.size() == _nP)
+            for (int i = 0; i < P_vec.size(); i++) P[i] = P_vec[i];
+        else
+        {
+            std::cout << "Input vector is " << P_vec.size() << ", nParameters is " << _nP <<". Wrong size." << std::endl;
+            throw (1);
+        }
+    }
+    double getP(int index)
     {
         if (index >= _nP)
         {
@@ -95,10 +141,12 @@ public:
         }
         else
             return P[index];
-        
     }
+    std::vector<double> getPVec() { return std::vector<double> (P, P+_nP); }
     
-    void setII(int index, int value)
+//  Input Index Array
+//      for referencing the y state vector
+    void setInputIndex(int index, int value)
     {
         if (index < _nInputs)
             inputIndex[index] = value;
@@ -108,7 +156,17 @@ public:
             throw (1);
         }
     }
-    int getII(int index)
+    void setInputIndex(std::vector<int> II_vec)
+    {
+        if (II_vec.size() == _nInputs)
+            for (int i = 0; i < II_vec.size(); i++) inputIndex[i] = II_vec[i];
+        else
+        {
+            std::cout << "Input vector is " << II_vec.size() << ", nInputs is " << _nInputs <<". Wrong size." << std::endl;
+            throw (1);
+        }
+    }
+    int getInputIndex(int index)
     {
         if (index >= _nInputs)
         {
@@ -118,22 +176,52 @@ public:
             return inputIndex[index];
         
     }
+    std::vector<int> getInputIndexVec() { return std::vector<int> (inputIndex, inputIndex+_nInputs); }
+
     
-    void setShared(int index, double * sharedPtr)
+//  Linker array
+//    For referencing algebraic variables from other submodules
+//    shared(int) is also included to call the get function of the linker.
+    void setLink(int index, linker * l)
     {
-        if (index < _nShared)
-            shared[index] = sharedPtr;
+        if (index < _nLinks)
+            links[index] = l;
         else
         {
-            std::cout << index << " outside of shared array range." << std::endl;
+            std::cout << index << " outside of link array range." << std::endl;
             throw (1);
         }
     }
-    double getSharedVal(int i) { return *(shared[i]); }
+    void setLink(std::vector<linker *> Link_vec)
+    {
+        if (Link_vec.size() == _nLinks)
+            for (int i = 0; i < Link_vec.size(); i++) links[i] = Link_vec[i];
+        else
+        {
+            std::cout << "Input vector is " << Link_vec.size() << ", nLinks is " << _nLinks <<". Wrong size." << std::endl;
+            throw (1);
+        }
+    }
+    linker * getLink(int index)
+    {
+        if (index >= _nLinks)
+        {
+            std::cout << index << " outside of links array range." << std::endl;
+            throw (1);
+        } else
+            return links[index];
+        
+    }
+    std::vector<linker *> getLinkVec() { return std::vector<linker *> (links, links+_nLinks); }
     
+    double shared(int index); // this is implemented after the definition of the linker class
+    
+
+//  Algebraic variable array
+//    This stores all calculated values that are used in the function DYDT
     void setAlgebraic(int index, double value)
     {
-        if (index < _nInputs)
+        if (index < _nAlgebraic)
             algebraic[index] = value;
         else
         {
@@ -141,8 +229,28 @@ public:
             throw (1);
         }
     }
+    void setAlgebraic(std::vector<double> A_vec)
+    {
+        if (A_vec.size() == _nAlgebraic)
+            for (int i = 0; i < A_vec.size(); i++) algebraic[i] = A_vec[i];
+        else
+        {
+            std::cout << "Input vector is " << A_vec.size() << ", nAlgebraic is " << _nAlgebraic <<". Wrong size." << std::endl;
+            throw (1);
+        }
+    }
+    double getAlgebraic(int index)
+    {
+        if (index >= _nAlgebraic)
+        {
+            std::cout << index << " outside of algebraic array range." << std::endl;
+            throw (1);
+        }
+        else
+            return algebraic[index];
+    }
+    std::vector<double> getAlgebraicVec() { return std::vector<double> (algebraic, algebraic+_nAlgebraic); }
     
-    // this function sets the value of shared[index] to the double pointer sharedPtr. Used for linking
     
     
     void setInputName(int index, std::string inputName)
@@ -155,140 +263,163 @@ public:
             throw (1);
         }
     }
-    
-    void setSharedName(int index, std::string sharedName)
+    void setInputName(std::vector<std::string> Name_vec)
     {
-        if (index < _nShared)
-            sharedNames[index] = sharedName;
+        if (Name_vec.size() == _nInputs)
+            for (int i = 0; i < Name_vec.size(); i++) inputNames[i] = Name_vec[i];
         else
         {
-            std::cout << index << " outside of shared array range." << std::endl;
+            std::cout << "Input vector is " << Name_vec.size() << ", nInputs is " << _nInputs <<". Wrong size." << std::endl;
             throw (1);
         }
     }
-    
-    void setAlgebraicName(int index, std::string algName)
+    std::string getInputName(int index)
     {
-        if (index < _nAlgebraic)
-            algebraicNames[index] = algName;
+        if (index >= _nInputs)
+        {
+            std::cout << index << " outside of input array range." << std::endl;
+            throw (1);
+        }
+        else
+            return inputNames[index];
+    }
+    std::vector<std::string> getInputNameVec() { return std::vector<std::string> (inputNames, inputNames+_nInputs); }
+    
+    
+    void setSharedName(int index, std::string name)
+    {
+        if (index < _nLinks)
+            sharedNames[index] = name;
         else
         {
-            std::cout << index << " outside of algebraic array range." << std::endl;
+            std::cout << index << " outside of links array range." << std::endl;
             throw (1);
         }
     }
-    
-    
+    void setSharedName(std::vector<std::string> Name_vec)
+    {
+        if (Name_vec.size() == _nLinks)
+            for (int i = 0; i < Name_vec.size(); i++) sharedNames[i] = Name_vec[i];
+        else
+        {
+            std::cout << "Input vector is " << Name_vec.size() << ", nLinks is " << _nLinks <<". Wrong size." << std::endl;
+            throw (1);
+        }
+    }
     std::string getSharedName(int index)
     {
-        if (index >= _nShared)
+        if (index >= _nLinks)
         {
-            std::cout << index << " outside of shared array range." << std::endl;
+            std::cout << index << " outside of link array range." << std::endl;
             throw (1);
         }
         else
             return sharedNames[index];
     }
+    std::vector<std::string> getSharedNameVec() { return std::vector<std::string> (sharedNames, sharedNames+_nLinks); }
     
-
-    std::vector<std::string> getInputNameList()
+    void setAlgebraicName(int index, std::string name)
     {
-        std::vector<std::string> nameList (inputNames, inputNames + _nInputs);
-        return nameList;
-    }
-    std::vector<std::string> getSharedNameList()
-    {
-        std::vector<std::string> nameList (sharedNames, sharedNames + _nShared);
-        return nameList;
-    }
-    std::vector<std::string> getAlgebraicNameList()
-    {
-        std::vector<std::string> nameList (algebraicNames, algebraicNames + _nAlgebraic);
-        return nameList;
-    }
-    std::vector<std::string> getStateNameList()
-    {
-//        std::vector<std::string> nameList (stateNames, stateNames + _neq);
-        return stateNames;
-    }
-    
-        
-    
-    double * getAlgebraicPtr(int index)
-    {
-        if (index >= _nAlgebraic)
+        if (index < _nAlgebraic)
+            algebraicNames[index] = name;
+        else
         {
             std::cout << index << " outside of algebraic array range." << std::endl;
             throw (1);
-        } else
-            return (&algebraic[index]);
+        }
     }
-    
-    double * getAlgebraicPtr(std::string query)
+    void setAlgebraicName(std::vector<std::string> Name_vec)
     {
+        if (Name_vec.size() == _nAlgebraic)
+            for (int i = 0; i < Name_vec.size(); i++) algebraicNames[i] = Name_vec[i];
+        else
+        {
+            std::cout << "Input vector is " << Name_vec.size() << ", nParameters is " << _nAlgebraic <<". Wrong size." << std::endl;
+            throw (1);
+        }
+    }
+    std::string getAlgebraicName(int index)
+    {
+        if (index >= _nAlgebraic)
+        {
+            std::cout << index << " outside of parameter array range." << std::endl;
+            throw (1);
+        }
+        else
+            return algebraicNames[index];
+    }
+    std::vector<std::string> getAlgebraicNameVec() { return std::vector<std::string> (algebraicNames, algebraicNames+_nAlgebraic); }
+    
+    
+    int getAlgebraicIndex(std::string query)
+    {
+        int index = -1;
         for (int i = 0; i < _nAlgebraic; i++)
         {
             if (algebraicNames[i] == query)
-                return getAlgebraicPtr(i);
+                index = i;
         }
-        return NULL;
+        if (index != -1)
+        {
+            return index;
+        } else
+            throw 1;
     }
     
-    bool link(int index, submodule * source, std::string sharedName)
+    int init(std::vector<submodule *> modlist, std::vector<std::string> statevars)
     {
-        double * ptr = source->getAlgebraicPtr(sharedName);
+        int retval, inputVal, linkerVal;
         
-        if (ptr != NULL)
-        {
-            setShared(index, ptr);
-            return true;
-        }
-        else
-            return false;
-    }
-    
-    bool link(int index, std::vector<submodule *> sources, std::string sharedName)
-    {
-        std::vector<submodule *>::iterator it = sources.begin() ;
-        bool isLinked = link(index, *it, sharedName);
-        while (! isLinked && it != sources.end())
-        {
-            it++;
-            isLinked = link(index, *it, sharedName);
-        }
-        if (! isLinked)
-            return false;
-        else
-            return true;
-    }
-    
-    void assignInputIndices(std::string statevars[], int len)
-    {
-        bool foundStateVar = false;
-        int c = 0;
+        inputVal = updateInputIndex(statevars);
+        linkerVal = link(modlist);
         
-        for (int i = 0; i < _nInputs; i++)
+        retval = inputVal + linkerVal;
+        
+        if (inputVal != 0)
         {
-            c = 0;
-            foundStateVar = false;
-            while (!foundStateVar && c < len)
-            {
-                
-                if (inputNames[i] == statevars[c])
-                {
-                    foundStateVar = true;
-                    setII(i, c);
-                }
-                c++;
-            }
-            if (!foundStateVar)
-            {
-                std::cout << "Error: " << inputNames[i] << " not found in statevars. " << std::endl;
-                throw (1);
-            }
+            std::cout << "Input configuration failed for " << inputVal << " value(s)." << std::endl;
         }
+        if (linkerVal != 0)
+        {
+            std::cout << "Linker configuration failed for " << linkerVal << " value(s)." << std::endl;
+        }
+        
+        return retval;
     }
     
 };
+
+class linker
+{
+private:
+    int _index;
+    submodule * _source;
+    
+public:
+//    linker() {}
+    linker(std::string query, std::vector<submodule *> modlist)
+    {
+        int index;
+        for (int i = 0; i < modlist.size(); i++)
+        {
+            try {
+                index = modlist[i]->getAlgebraicIndex(query);
+                _index = index;
+                _source = modlist[i];
+                return;
+            } catch (int e) { }
+        }
+        std::cout << "Link for " << query << " failed." << std::endl;
+        throw 1;
+    }
+    double get() { return _source->getAlgebraic(_index); }
+    void setIndex(int index) { _index = index; }
+    int getIndex() { return _index; }
+    void setSource(submodule * source) { _source = source; }
+    submodule * getSource() { return _source; }
+};
+
+
+
 
 #endif /* submodule_hpp */

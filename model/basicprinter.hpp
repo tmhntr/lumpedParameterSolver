@@ -9,6 +9,7 @@
 #define basicprinter_hpp
 
 #include "interface.hpp"
+#include <iomanip>
 
 class basicprinter: public printer {
     solver * _slvr;
@@ -25,11 +26,14 @@ class basicprinter: public printer {
         titlesPrinted = true;
     }
 public:
+    // Constructors
     basicprinter() : printer() {  }
     basicprinter(void * slvr) : printer() { setSolver(slvr); }
+    
     void setSolver(void * slvr) { _slvr = (solver *) slvr; }
     void print()
     {
+        std::cout << std::fixed << std::setprecision(3);
         if (!titlesPrinted) printTitles();
         double t = _slvr->getT();
         std::cout << t << "\t";

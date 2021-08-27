@@ -17,29 +17,36 @@
 void heart::updateAlgebraic(double t, double y[])
 {
     // now load parameters in
-    double RR = P[0];
-    double Esys_lv = P[1];
-    double Edias_lv = P[2];
-    double Esys_rv = P[3];
-    double Edias_rv = P[4];
-    double Esys_la = P[5];
-    double Edias_la = P[6];
-    double Esys_ra = P[7];
-    double Edias_ra = P[8];
+    double RR = getP(0);
+    double Esys_lv = getP(1);
+    double Edias_lv = getP(2);
+    double Esys_rv = getP(3);
+    double Edias_rv = getP(4);
+    double Esys_la = getP(5);
+    double Edias_la = getP(6);
+    double Esys_ra = getP(7);
+    double Edias_ra = getP(8);
 
-    double R_ri = P[9];
-    double R_rav = P[10];
-    double R_li = P[11];
-    double R_lav = P[12];
+    double R_ri[nInlets];
+    for (int i = 0; i < nInlets; i++)
+        R_ri[i] = getP(9+i);
+//    double R_ri = getP(9);
+    double R_rav = getP(9+nInlets);
+    double R_li = getP(10+nInlets);
+    double R_lav = getP(11+nInlets);
 
     // Inputs
-    double p_ra = y[inputIndex[4]];
-    double p_rv = y[inputIndex[5]];
-    double p_la = y[inputIndex[6]];
-    double p_lv = y[inputIndex[7]];
+    double p_ra = y[getInputIndex(4)];
+    double p_rv = y[getInputIndex(5)];
+    double p_la = y[getInputIndex(6)];
+    double p_lv = y[getInputIndex(7)];
     
-    double p_ri = y[inputIndex[8]];
-    double p_li = y[inputIndex[9]]; // pressure at left inlet
+    double p_ri[nInlets];
+    for (int i = 0; i < nInlets; i++)
+        p_ri[i] = y[getInputIndex(8+i)];
+    
+    
+    double p_li = y[getInputIndex(8+nInlets)]; // pressure at left inlet
 
     double  loc_t = fmod(t,RR);
 
@@ -98,16 +105,19 @@ void heart::updateAlgebraic(double t, double y[])
     
     // flows and pressures
     // right inlet flow
-    double q_ri, q_rav, q_li, q_lav;
-    if (p_ri > p_ra)
+    double q_rav, q_li, q_lav;
+    double q_ri[nInlets];
+    for (int i = 0; i < nInlets; i++)
     {
-      q_ri = (p_ri - p_ra) / R_ri;
+        if (p_ri[i] > p_ra)
+        {
+          q_ri[i] = (p_ri[i] - p_ra) / R_ri[i];
+        }
+        else
+        {
+          q_ri[i] = 0.0;
+        }
     }
-    else
-    {
-      q_ri = 0.0;
-    }
-    
     // right atrioventricular flow
     if (p_ra > p_rv)
     {
@@ -139,48 +149,50 @@ void heart::updateAlgebraic(double t, double y[])
     }
     
     // assign values to algebraic array
-    algebraic[0] = Clv;
-    algebraic[1] = Crv;
-    algebraic[2] = Cla;
-    algebraic[3] = Cra;
-    
-    algebraic[4] = q_ri;
-    algebraic[5] = q_rav;
-    algebraic[6] = q_li;
-    algebraic[7] = q_lav;
+    setAlgebraic(0, Clv);
+//    setAlgebraic(0, Clv);
+    setAlgebraic(1, Crv);
+    setAlgebraic(2, Cla);
+    setAlgebraic(3, Cra);
+    for (int i = 0; i < nInlets; i++)
+        setAlgebraic(4+i, q_ri[i]);
+    setAlgebraic(4+nInlets, q_rav);
+    setAlgebraic(5+nInlets, q_li);
+    setAlgebraic(6+nInlets, q_lav);
 
 }
 
 void heart::getDY(double t, double y[], double * DY)
 {
     // load input values
-    double C_ra_0 = y[inputIndex[0]]; // Right atrial compliance from previous timestep
-    double C_rv_0 = y[inputIndex[1]]; // Right ventricular compliance from previous timestep
-    double C_la_0 = y[inputIndex[2]]; // left atrial compliance from previous timestep
-    double C_lv_0 = y[inputIndex[3]]; // left venricular compliance from previous timestep
+    double C_ra_0 = y[getInputIndex(0)]; // Right atrial compliance from previous timestep
+    double C_rv_0 = y[getInputIndex(1)]; // Right ventricular compliance from previous timestep
+    double C_la_0 = y[getInputIndex(2)]; // left atrial compliance from previous timestep
+    double C_lv_0 = y[getInputIndex(3)]; // left venricular compliance from previous timestep
     
-    double p_ra = y[inputIndex[4]];
-    double p_rv = y[inputIndex[5]];
-    double p_la = y[inputIndex[6]];
-    double p_lv = y[inputIndex[7]];
+    double p_ra = y[getInputIndex(4)];
+    double p_rv = y[getInputIndex(5)];
+    double p_la = y[getInputIndex(6)];
+    double p_lv = y[getInputIndex(7)];
 
     
     // load algebraic parameters
-    double C_lv_1 = algebraic[0];
-    double C_rv_1 = algebraic[1];
-    double C_la_1 = algebraic[2];
-    double C_ra_1 = algebraic[3];
-    
-    double q_ri = algebraic[4];
-    double q_rav = algebraic[5];
-    double q_li = algebraic[6];
-    double q_lav = algebraic[7];
+    double C_lv_1 = getAlgebraic(0);
+    double C_rv_1 = getAlgebraic(1);
+    double C_la_1 = getAlgebraic(2);
+    double C_ra_1 = getAlgebraic(3);
+    double q_ri = 0;
+    for (int i = 0; i < nInlets; i++)
+        q_ri += getAlgebraic(4+i);
+    double q_rav = getAlgebraic(4+nInlets);
+    double q_li = getAlgebraic(5+nInlets);
+    double q_lav = getAlgebraic(6+nInlets);
     
     double DELTAT = 0.01;
     
     // load shared algebraic values
-    double q_ro = getSharedVal(0);
-    double q_lo = getSharedVal(1);
+    double q_ro = shared(0);
+    double q_lo = shared(1);
     
     DY[0]   = (C_ra_1 - C_ra_0)/DELTAT;  // Right Atrial Compliance
     DY[1]   = (C_rv_1 - C_rv_0)/DELTAT;  // Right Ventricle Compliance

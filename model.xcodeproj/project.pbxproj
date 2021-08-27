@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0F98856A26D8191500D7FA72 /* libsundials_cvodes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F98856926D8191500D7FA72 /* libsundials_cvodes.a */; };
 		0F98856C26D8194300D7FA72 /* libsundials_nvecserial.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F98856B26D8194300D7FA72 /* libsundials_nvecserial.a */; };
+		0F9EF14C26D95C7B00655EAC /* submodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F9EF14B26D95C7B00655EAC /* submodule.cpp */; };
 		0FC08F7B26CAE1BC001C52FB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC08F7A26CAE1BC001C52FB /* main.cpp */; };
 		0FC314E526D08DAC0044B1CC /* heart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC314E426D08DAC0044B1CC /* heart.cpp */; };
 		0FC3876626D6FA1C00905F31 /* RCR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC314E226D081D30044B1CC /* RCR.cpp */; };
@@ -34,6 +35,8 @@
 		0F98856B26D8194300D7FA72 /* libsundials_nvecserial.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsundials_nvecserial.a; path = ../../../../usr/local/Cellar/sundials/5.7.0_1/lib/libsundials_nvecserial.a; sourceTree = "<group>"; };
 		0F98856D26D81E3B00D7FA72 /* model.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = model.entitlements; sourceTree = "<group>"; };
 		0F9EF14926D82E0E00655EAC /* basicprinter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = basicprinter.hpp; sourceTree = "<group>"; };
+		0F9EF14A26D8745100655EAC /* linker.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = linker.hpp; sourceTree = "<group>"; };
+		0F9EF14B26D95C7B00655EAC /* submodule.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = submodule.cpp; sourceTree = "<group>"; };
 		0FC08F7726CAE1BB001C52FB /* model */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = model; sourceTree = BUILT_PRODUCTS_DIR; };
 		0FC08F7A26CAE1BC001C52FB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		0FC08F8126CAE1E2001C52FB /* interface.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = interface.hpp; sourceTree = "<group>"; };
@@ -93,11 +96,13 @@
 				0F9EF14926D82E0E00655EAC /* basicprinter.hpp */,
 				0F98856326D8008900D7FA72 /* sdsolver.hpp */,
 				0FC314EA26D1AB4F0044B1CC /* submodule.hpp */,
+				0F9EF14A26D8745100655EAC /* linker.hpp */,
 				0FC314E426D08DAC0044B1CC /* heart.cpp */,
 				0FC314E226D081D30044B1CC /* RCR.cpp */,
 				0FC314E626D08F140044B1CC /* RCR.hpp */,
 				0FC314E726D0A0310044B1CC /* heart.hpp */,
 				0FC08F8126CAE1E2001C52FB /* interface.hpp */,
+				0F9EF14B26D95C7B00655EAC /* submodule.cpp */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -160,6 +165,7 @@
 			files = (
 				0FC3876626D6FA1C00905F31 /* RCR.cpp in Sources */,
 				0FC314E526D08DAC0044B1CC /* heart.cpp in Sources */,
+				0F9EF14C26D95C7B00655EAC /* submodule.cpp in Sources */,
 				0FC08F7B26CAE1BC001C52FB /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

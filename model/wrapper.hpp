@@ -55,38 +55,38 @@ public:
         }
         return NULL;
     }
-    std::vector<submodule *> getModelList() { return models; }
+    std::vector<submodule *> getModelVec() { return models; }
     
     std::string * getStateNames()
     {
         return stateNames.data();
     }
     
-    void updateStateNames()
-    {
-        // reallocate statenames so that it fits all names.
-//        if (stateNames)
-//            free(stateNames);
-//        stateNames = (std::string *) calloc(getNEQ(), sizeof(std::string));
-        
-        std::vector<submodule *>::iterator it =  models.begin();
-        int c = 0;
-        while (c < getNEQ() && it != models.end())
-        {
-            for (int i = 0; i < (*it)->getNEQ(); i++)
-            {
-                stateNames.push_back((*it)->getStateName(i));
-                c++;
-            }
-            it++;
-        }
-    }
+//    void updateStateNames()
+//    {
+//        // reallocate statenames so that it fits all names.
+////        if (stateNames)
+////            free(stateNames);
+////        stateNames = (std::string *) calloc(getNEQ(), sizeof(std::string));
+//
+//        std::vector<submodule *>::iterator it =  models.begin();
+//        int c = 0;
+//        while (c < getNEQ() && it != models.end())
+//        {
+//            for (int i = 0; i < (*it)->getNEQ(); i++)
+//            {
+//                stateNames.push_back((*it)->getStateName(i));
+//                c++;
+//            }
+//            it++;
+//        }
+//    }
     
     void updateAlgebraic(double t, double y[])
     {
-        for (std::vector<submodule *>::iterator it = models.begin() ; it != models.end(); ++it)
+        for (int i = 0; i <  models.size(); i++)
         {
-            (*it)->updateAlgebraic(t, y);
+            models[i]->updateAlgebraic(t, y);
         }
     }
     
@@ -103,20 +103,20 @@ public:
         }
     }
     
-    
-    void link(submodule * mdl, int index)
+    int init()
     {
-        bool success = false;
-        for (int k = 0; k < models.size(); k++)
+        int retval = 0;
+        for (std::vector<submodule *>::iterator it = models.begin() ; it != models.end(); ++it)
         {
-            if(mdl->link(index, models[k], mdl->getSharedName(index)))
-                success = true;
+            try {
+                if ((*it)->init(models, stateNames) != 0)
+                    throw 1;
+            } catch (int e) {
+                std::cout << "Initialization for model (" << (*it)->getName() << ") failed." << std::endl;
+                retval++;
+            }
         }
-        if(!success)
-        {
-            throw (mdl->getSharedName(index));
-        }
-        
+        return retval;
     }
 };
 

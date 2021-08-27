@@ -25,6 +25,8 @@ public:
     }
     model(std::string name) { _name = name; }
     
+    virtual ~model() {}
+    
     std::string getName() { return _name; }
 
     virtual void updateAlgebraic(double t, double y[]) = 0;
@@ -58,6 +60,8 @@ public:
 
 class printer {
 public:
+    printer() {}
+    virtual ~printer() {}
     virtual void print() = 0;
     virtual void setSolver(void * slvr) = 0;
 };
@@ -68,6 +72,7 @@ class solver {
 public:
     solver() {}
     solver(model * m): solver() { setModel(m); }
+    virtual ~solver() {}
     
     void setModel(model * m) { mdl = m; }
     model * getModel() { return mdl; }
