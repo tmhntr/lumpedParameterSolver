@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F49A22D26D9CDEA00CBF5BE /* myogenic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F49A22B26D9CDEA00CBF5BE /* myogenic.cpp */; };
+		0F49A23026DD2E3800CBF5BE /* myoRC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F49A22F26DD2E3800CBF5BE /* myoRC.cpp */; };
 		0F98856A26D8191500D7FA72 /* libsundials_cvodes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F98856926D8191500D7FA72 /* libsundials_cvodes.a */; };
 		0F98856C26D8194300D7FA72 /* libsundials_nvecserial.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F98856B26D8194300D7FA72 /* libsundials_nvecserial.a */; };
 		0F9EF14C26D95C7B00655EAC /* submodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F9EF14B26D95C7B00655EAC /* submodule.cpp */; };
@@ -28,6 +30,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0F49A22B26D9CDEA00CBF5BE /* myogenic.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = myogenic.cpp; sourceTree = "<group>"; };
+		0F49A22C26D9CDEA00CBF5BE /* myogenic.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = myogenic.hpp; sourceTree = "<group>"; };
+		0F49A22E26DD2D3600CBF5BE /* myoRC.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = myoRC.hpp; sourceTree = "<group>"; };
+		0F49A22F26DD2E3800CBF5BE /* myoRC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = myoRC.cpp; sourceTree = "<group>"; };
 		0F98856326D8008900D7FA72 /* sdsolver.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = sdsolver.hpp; sourceTree = "<group>"; };
 		0F98856526D8016A00D7FA72 /* wrapper.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = wrapper.hpp; sourceTree = "<group>"; };
 		0F98856726D8183A00D7FA72 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lib; path = ../../../../usr/local/Cellar/sundials/5.7.0_1/lib; sourceTree = "<group>"; };
@@ -99,7 +105,11 @@
 				0F9EF14A26D8745100655EAC /* linker.hpp */,
 				0FC314E426D08DAC0044B1CC /* heart.cpp */,
 				0FC314E226D081D30044B1CC /* RCR.cpp */,
+				0F49A22F26DD2E3800CBF5BE /* myoRC.cpp */,
+				0F49A22B26D9CDEA00CBF5BE /* myogenic.cpp */,
+				0F49A22C26D9CDEA00CBF5BE /* myogenic.hpp */,
 				0FC314E626D08F140044B1CC /* RCR.hpp */,
+				0F49A22E26DD2D3600CBF5BE /* myoRC.hpp */,
 				0FC314E726D0A0310044B1CC /* heart.hpp */,
 				0FC08F8126CAE1E2001C52FB /* interface.hpp */,
 				0F9EF14B26D95C7B00655EAC /* submodule.cpp */,
@@ -165,7 +175,9 @@
 			files = (
 				0FC3876626D6FA1C00905F31 /* RCR.cpp in Sources */,
 				0FC314E526D08DAC0044B1CC /* heart.cpp in Sources */,
+				0F49A23026DD2E3800CBF5BE /* myoRC.cpp in Sources */,
 				0F9EF14C26D95C7B00655EAC /* submodule.cpp in Sources */,
+				0F49A22D26D9CDEA00CBF5BE /* myogenic.cpp in Sources */,
 				0FC08F7B26CAE1BC001C52FB /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
