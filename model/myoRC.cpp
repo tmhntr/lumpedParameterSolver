@@ -17,6 +17,8 @@ The following is a basic implementation of an rcr windkessel compartment. By con
  Algebraic: outlet flow rate [nSegments]
  State variables: compartment pressure [nSegments]
  
+ Parameters: length [nSegments], nparallel [nSegments], mu [nSegments],  E 
+ 
  Note that [n] denotes multiple values
  Note that (module) denotes the probably source of such values
  */
@@ -28,7 +30,7 @@ void myoRC::updateAlgebraic(double t, double y[])
     
     // Single Parameters
     double mu;
-    mu = getP(3*nSegments+0);
+    
     
     // Multi parameters
     double length, nParallel;
@@ -38,20 +40,26 @@ void myoRC::updateAlgebraic(double t, double y[])
     
     for (int i = 0; i < nSegments; i++)
     {
-        length = getP(0*nSegments+i);
+        length = getP(0*nSegments+i); // units (cm)
         nParallel = getP(1*nSegments+i);
+        mu = getP(2*nSegments); // units: (cP)
+        
+        length = length * 1e-2; // convert units from (cm) to (m)
+        mu = mu * 1e-3; // convert units from units from (cP) to  (N * s / m^2)
         
         // Inputs
         p_up = y[getInputIndex(0*nSegments+i)];
         p = y[getInputIndex(0*nSegments+i+1)];
         
-        D = y[getInputIndex(1*nSegments+i+1)]; r = D/2.0;
+        D = y[getInputIndex(1*nSegments+i+1)];
+        D = D*1e-6; // from um to m
+        r = D/2.0;
         
         R = (8.0*mu*length)/(M_PI*pow(r, 4)); // units: Pa * s * m^-3
-        
+        R = R*(1e-6/133.32); // from Pa * s * m^-3 to mmhg-s/ml
+
         R = R/nParallel;
         
-        R = R/(133.32/1e-6);
         
         q = (p_up - p) / R;
     
@@ -69,7 +77,7 @@ void myoRC::getDY(double t, double y[], double * DY)
     double q_in, q_out;
     
     // Multi parameters
-    double length, nParallel, E, h;
+    double length, nParallel, E;
     
     //mIntermediate values
     double C;
@@ -77,14 +85,18 @@ void myoRC::getDY(double t, double y[], double * DY)
     for (int i = 0; i < nSegments; i++)
     {
         // State inputs
-        D = y[getInputIndex(1*nSegments+i+1)]; r = D/2.0;
+        D = y[getInputIndex(1*nSegments+i+1)]; // units: um
+        r = D/2.0; // units: um
+        r = r * 1e-6; // unit conversion from um to m
         
         // Parameters
-        length = getP(0*nSegments+i);
+        length = getP(0*nSegments+i); // units (cm)
         nParallel = getP(1*nSegments+i);
-        E = getP(3*nSegments+i);
-        h = getP(4*nSegments+i);
+        E = getP(3*nSegments);
+//        h = getP(4*nSegments+i);
         
+        length = length * 1e-2; // convert units from (cm) to (m)
+
         // Algebraic terms
         q_in = getAlgebraic(i);
         if (i < nSegments - 1)
@@ -93,9 +105,9 @@ void myoRC::getDY(double t, double y[], double * DY)
         } else
             q_out = shared(0);
         
-        C = (2*M_PI*r*length)/(E*h);
+        C = (2*M_PI*pow(r, 2)*length)/(E*(0.0829*r + 0.0405*(1e-6))); // in-line conversion  (0.0405) from um to m
         C = C*nParallel;
-        C = C/(1e-6/133.32);
+        C = C*(133.32/1e-6);
         
         DY[i]   = (1.0 / C) * ( q_in - q_out );
 

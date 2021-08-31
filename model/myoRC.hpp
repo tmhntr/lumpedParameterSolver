@@ -42,7 +42,7 @@ public:
     }
     void updateAlgebraic(double t, double y[]);
     void getDY(double t, double y[], double * DY);
-    void setHasValve(bool value) { hasValve = value; }
+    void setSegNum(int value) { nSegments = value; }
 };
 
 #endif /* myoRC_hpp */
