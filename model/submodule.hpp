@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include "interface.hpp"
+#include "wrapper.hpp"
 #include <math.h>
 #include <string>
 #include <vector>
@@ -55,7 +56,9 @@ private:
         return missing;
     }
     
-    int link(std::vector<submodule *> modlist);
+    int link(std::vector<model *> modlist);
+    
+    std::vector<submodule *> flattenModList(std::vector<model *> modlist);
     
     double * P;
     int * inputIndex;
@@ -366,7 +369,7 @@ public:
             throw 1;
     }
     
-    int init(std::vector<submodule *> modlist, std::vector<std::string> statevars)
+    int init(std::vector<model *> modlist, std::vector<std::string> statevars)
     {
         int retval, inputVal, linkerVal;
         

@@ -31,6 +31,7 @@ public:
 
     virtual void updateAlgebraic(double t, double y[]) = 0;
     virtual void getDY(double t, double y[], double * DY) = 0;
+    virtual int init(std::vector<model *> modlist, std::vector<std::string> statevars) = 0;
     
     void setNEQ(int neq){ _neq = neq; }
     int getNEQ(){ return _neq; }

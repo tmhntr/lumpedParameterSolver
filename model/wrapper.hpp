@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "interface.hpp"
-#include "submodule.hpp"
+//#include "submodule.hpp"
 #include <math.h>
 #include <string>
 #include <vector>
@@ -19,20 +19,20 @@
 class wrapper: public model
 {
 private:
-    std::vector<submodule *> models;
+    std::vector<model *> models;
 public:
 //    std::vector<std::string> stateNames;
 
     wrapper() : model("wrapper") {}
-    wrapper(std::vector<submodule *> mdls) : wrapper()
+    wrapper(std::vector<model *> mdls) : wrapper()
     {
-        for (std::vector<submodule *>::iterator it = mdls.begin() ; it != mdls.end(); ++it)
+        for (std::vector<model *>::iterator it = mdls.begin() ; it != mdls.end(); ++it)
         {
             addModel(*it);
         }
     }
     
-    void addModel(submodule * mdl)
+    void addModel(model * mdl)
     {
         models.push_back(mdl);
         int oldNeq = getNEQ();
@@ -44,10 +44,10 @@ public:
         }
     }
     
-    submodule * getModel(int index) { return models[index]; }
-    submodule * getModel(std::string modelName)
+    model * getModel(int index) { return models[index]; }
+    model * getModel(std::string modelName)
     {
-        std::vector<submodule *>::iterator it = models.begin();
+        std::vector<model *>::iterator it = models.begin();
         while (it != models.end())
         {
             if (modelName == (*it)->getName())
@@ -55,7 +55,7 @@ public:
         }
         return NULL;
     }
-    std::vector<submodule *> getModelVec() { return models; }
+    std::vector<model *> getModelVec() { return models; }
     
     std::string * getStateNames()
     {
@@ -94,7 +94,7 @@ public:
     {
         model * mdlPtr;
         double * DYPtr = DY;
-        for (std::vector<submodule *>::iterator it = models.begin() ; it != models.end(); ++it)
+        for (std::vector<model *>::iterator it = models.begin() ; it != models.end(); ++it)
         {
             mdlPtr = *it;
 //            std::cout << mdlPtr->getName() << std::endl;
@@ -105,11 +105,16 @@ public:
     
     int init()
     {
+        return init(models, stateNames);
+    }
+    
+    int init(std::vector<model *> modlist, std::vector<std::string> statevars)
+    {
         int retval = 0;
-        for (std::vector<submodule *>::iterator it = models.begin() ; it != models.end(); ++it)
+        for (std::vector<model *>::iterator it = models.begin() ; it != models.end(); it++)
         {
             try {
-                if ((*it)->init(models, stateNames) != 0)
+                if ((*it)->init(modlist, statevars) != 0)
                     throw 1;
             } catch (int e) {
                 std::cout << "Initialization for model (" << (*it)->getName() << ") failed." << std::endl;
