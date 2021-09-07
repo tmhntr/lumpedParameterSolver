@@ -14,7 +14,7 @@
 //    void getDY(double t, double y[], double * DY);
 //};
 
-void heart::updateAlgebraic(double t, double y[])
+void heart::updateDerived(double t, double y[])
 {
     // now load parameters in
     double RR = getP(0);
@@ -36,17 +36,17 @@ void heart::updateAlgebraic(double t, double y[])
     double R_lav = getP(11+nInlets);
 
     // Inputs
-    double p_ra = y[getInputIndex(4)];
-    double p_rv = y[getInputIndex(5)];
-    double p_la = y[getInputIndex(6)];
-    double p_lv = y[getInputIndex(7)];
+    double p_ra = input(4);
+    double p_rv = input(5);
+    double p_la = input(6);
+    double p_lv = input(7);
     
     double p_ri[nInlets];
     for (int i = 0; i < nInlets; i++)
-        p_ri[i] = y[getInputIndex(8+i)];
+        p_ri[i] = input(8+i);
     
     
-    double p_li = y[getInputIndex(8+nInlets)]; // pressure at left inlet
+    double p_li = input(8+nInlets); // pressure at left inlet
 
     double  loc_t = fmod(t,RR);
 
@@ -149,50 +149,50 @@ void heart::updateAlgebraic(double t, double y[])
     }
     
     // assign values to algebraic array
-    setAlgebraic(0, Clv);
+    setDerived(0, Clv);
 //    setAlgebraic(0, Clv);
-    setAlgebraic(1, Crv);
-    setAlgebraic(2, Cla);
-    setAlgebraic(3, Cra);
+    setDerived(1, Crv);
+    setDerived(2, Cla);
+    setDerived(3, Cra);
     for (int i = 0; i < nInlets; i++)
-        setAlgebraic(4+i, q_ri[i]);
-    setAlgebraic(4+nInlets, q_rav);
-    setAlgebraic(5+nInlets, q_li);
-    setAlgebraic(6+nInlets, q_lav);
+        setDerived(4+i, q_ri[i]);
+    setDerived(4+nInlets, q_rav);
+    setDerived(5+nInlets, q_li);
+    setDerived(6+nInlets, q_lav);
 
 }
 
 void heart::getDY(double t, double y[], double * DY)
 {
     // load input values
-    double C_ra_0 = y[getInputIndex(0)]; // Right atrial compliance from previous timestep
-    double C_rv_0 = y[getInputIndex(1)]; // Right ventricular compliance from previous timestep
-    double C_la_0 = y[getInputIndex(2)]; // left atrial compliance from previous timestep
-    double C_lv_0 = y[getInputIndex(3)]; // left venricular compliance from previous timestep
+    double C_ra_0 = input(0); // Right atrial compliance from previous timestep
+    double C_rv_0 = input(1); // Right ventricular compliance from previous timestep
+    double C_la_0 = input(2); // left atrial compliance from previous timestep
+    double C_lv_0 = input(3); // left venricular compliance from previous timestep
     
-    double p_ra = y[getInputIndex(4)];
-    double p_rv = y[getInputIndex(5)];
-    double p_la = y[getInputIndex(6)];
-    double p_lv = y[getInputIndex(7)];
+    double p_ra = input(4);
+    double p_rv = input(5);
+    double p_la = input(6);
+    double p_lv = input(7);
 
     
     // load algebraic parameters
-    double C_lv_1 = getAlgebraic(0);
-    double C_rv_1 = getAlgebraic(1);
-    double C_la_1 = getAlgebraic(2);
-    double C_ra_1 = getAlgebraic(3);
+    double C_lv_1 = input(9+nInlets);
+    double C_rv_1 = input(10+nInlets);
+    double C_la_1 = input(11+nInlets);
+    double C_ra_1 = input(12+nInlets);
     double q_ri = 0;
     for (int i = 0; i < nInlets; i++)
-        q_ri += getAlgebraic(4+i);
-    double q_rav = getAlgebraic(4+nInlets);
-    double q_li = getAlgebraic(5+nInlets);
-    double q_lav = getAlgebraic(6+nInlets);
+        q_ri += input(13+nInlets);
+    double q_rav = input(14+nInlets);
+    double q_li = input(15+nInlets);
+    double q_lav = input(16+nInlets);
     
-    double DELTAT = 0.01;
+//    double DELTAT = 0.01;
     
     // load shared algebraic values
-    double q_ro = shared(0);
-    double q_lo = shared(1);
+    double q_ro = input(17+nInlets);
+    double q_lo = input(18+nInlets);
     
     DY[0]   = (C_ra_1 - C_ra_0)/DELTAT;  // Right Atrial Compliance
     DY[1]   = (C_rv_1 - C_rv_0)/DELTAT;  // Right Ventricle Compliance

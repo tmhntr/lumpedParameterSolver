@@ -9,7 +9,7 @@
 #define myoRC_hpp
 
 #include <stdio.h>
-#include "submodule.hpp"
+#include "component.hpp"
 #include <math.h>
 #include <map>
 #include <vector>
@@ -25,7 +25,7 @@
  - Algebraic values are flows from upstream compartments to this compartment
  */
 
-class myoRC: public submodule {
+class myoRC: public component {
 private:
     bool hasValve = false;
     int nInlets = 1;
@@ -35,14 +35,19 @@ private:
 //    int nAlgebraic = 1;
 //    int nP = 2;
 public:
-    myoRC(std::string name, std::vector<std::string> sharedNames, std::vector<std::string> inputNames, std::vector<std::string> algebraicNames, std::vector<std::string> outputNames, std::vector<double> parameters) : submodule(name, sharedNames, inputNames, algebraicNames, outputNames, parameters)
-    {
-        nInlets = (int) inputNames.size() - 1;
-        nOutlets = (int) sharedNames.size();
-    }
-    void updateAlgebraic(double t, double y[]);
+    myoRC(std::string name, std::vector<std::string> inputNames, std::vector<std::string> algebraicNames, std::vector<std::string> outputNames, std::vector<double> parameters) : component(name, inputNames, algebraicNames, outputNames, parameters) {    }
+    
+    void setNInlets(int value) { nInlets = value; }
+    int getNInlets() { return nInlets; }
+    
+    void setNOutlets(int value) { nOutlets = value; }
+    int getNOutlets() { return nOutlets; }
+    
+    void setNSegments(int value) { nSegments = value; }
+    int getNSegments() { return nSegments; }
+    
+    void updateDerived(double t, double y[]);
     void getDY(double t, double y[], double * DY);
-    void setSegNum(int value) { nSegments = value; }
 };
 
 #endif /* myoRC_hpp */

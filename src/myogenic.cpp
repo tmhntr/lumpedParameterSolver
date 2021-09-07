@@ -20,7 +20,7 @@
  Note that (module) denotes the probably source of such values
  */
 
-void myogenic::updateAlgebraic(double t, double y[])
+void myogenic::updateDerived(double t, double y[])
 {
 
     bool isFlow = true;
@@ -38,10 +38,10 @@ void myogenic::updateAlgebraic(double t, double y[])
     for (int i = 0; i < nSegments; i++)
     {
 //      Inputs:
-        D = y[getInputIndex(0*nSegments+i)]; double r = D/2; // units: um
-        A = y[getInputIndex(1*nSegments+i)];
+        D = input(0*nSegments+i); double r = D/2; // units: um
+        A = input(1*nSegments+i);
         
-        p = y[getInputIndex(2*nSegments+i)]; // units mmhg
+        p = input(2*nSegments+i); // units mmhg
         p = p * 1333.22; // convert units from mmHg to dyn / cm^2
 
 
@@ -68,7 +68,7 @@ void myogenic::updateAlgebraic(double t, double y[])
             mu = getP(8*nSegments+i); // units: cP
             mu = mu * 1e-3; // units: N * s / m^2
             nParallel = getP(9*nSegments+i);
-            q = shared(i) / nParallel;
+            q = input(3*nSegments+i) / nParallel;
             v = q / (M_PI * pow(r*1e-4, 2)); // in-line unit conversion of r from um to cm
             //units: cm/s
             tau_wall = (4.0 * mu * q) / (M_PI * pow(r*1e-4, 4)); // in-line unit conversion of r from um to cm
@@ -104,9 +104,9 @@ void myogenic::updateAlgebraic(double t, double y[])
 //      Equation 4
         A_total = 1/(1 + exp(-S_tone));
 
-        setAlgebraic(0*nSegments+i, T_total);
-        setAlgebraic(1*nSegments+i, A_total);
-        setAlgebraic(2*nSegments+i, T);
+        setDerived(0*nSegments+i, T_total);
+        setDerived(1*nSegments+i, A_total);
+        setDerived(2*nSegments+i, T);
 
 
     }
@@ -123,16 +123,16 @@ void myogenic::getDY(double t, double y[], double * DY)
         double tau_a = getP(10*nSegments+5);
         
         // State Inputs
-        double D = y[getInputIndex(0*nSegments+i)];
-        double A = y[getInputIndex(1*nSegments+i)];
-        double p = y[getInputIndex(2*nSegments+i)];// units mmhg
+//        double D = input(0*nSegments+i);
+        double A = input(1*nSegments+i);
+        double p = input(2*nSegments+i);// units mmhg
         p = p * 1333.22; // convert units from mmHg to dyn / cm^2
         
         
         // Algebraic inputs
-        double T_total = getAlgebraic(0*nSegments+i);
-        double A_total = getAlgebraic(1*nSegments+i);
-        double T = getAlgebraic(2*nSegments+i);
+        double T_total = getDerived(0*nSegments+i);
+        double A_total = getDerived(1*nSegments+i);
+        double T = getDerived(2*nSegments+i);
                 
         
 

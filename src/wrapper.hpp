@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "interface.hpp"
-//#include "submodule.hpp"
+#include "component.hpp"
 #include <math.h>
 #include <string>
 #include <vector>
@@ -82,11 +82,11 @@ public:
 //        }
 //    }
     
-    void updateAlgebraic(double t, double y[])
+    void updateDerived(double t, double y[])
     {
         for (int i = 0; i <  models.size(); i++)
         {
-            models[i]->updateAlgebraic(t, y);
+            models[i]->updateDerived(t, y); 
         }
     }
     
@@ -103,18 +103,20 @@ public:
         }
     }
     
-    int init()
+    int init(solver * slvr)
     {
-        return init(models, stateNames);
+        slvr->setModel(this);
+        return init(components(), stateNames, slvr);
     }
     
-    int init(std::vector<model *> modlist, std::vector<std::string> statevars)
+    int init(std::vector<model *> modlist, std::vector<std::string> stateVars, solver * slvr)
     {
         int retval = 0;
-        for (std::vector<model *>::iterator it = models.begin() ; it != models.end(); it++)
+//        std::vector<component *> flatmodlist = flattenModList(modlist);
+        for (std::vector<model *>::iterator it = modlist.begin() ; it != modlist.end(); it++)
         {
             try {
-                if ((*it)->init(modlist, statevars) != 0)
+                if ((*it)->init(slvr) != 0)
                     throw 1;
             } catch (int e) {
                 std::cout << "Initialization for model (" << (*it)->getName() << ") failed." << std::endl;
@@ -122,6 +124,41 @@ public:
             }
         }
         return retval;
+    }
+    
+    std::vector<component *> flattenModList(std::vector<model *> modlist)
+    {
+        std::vector<component *> newModList;
+        wrapper * wrap;
+        for (int i = 0; i < modlist.size(); i++)
+        {
+            
+            if (typeid(wrapper) == typeid(*(modlist[i])))
+            {
+                wrap = (wrapper *) modlist[i];
+                std::vector<component *> newNewModList = flattenModList(wrap->getModelVec());
+                for (int j = 0; j  < newNewModList.size(); j++)
+                {
+                    newModList.push_back(newNewModList[j]);
+                }
+            } else
+            {
+                newModList.push_back((component *) modlist[i]);
+            }
+        }
+        return newModList;
+    }
+    
+    std::vector<component *> flattenModList() {return flattenModList(models); }
+    
+    std::vector<model *> components()
+    {
+        std::vector<model *> mlist;
+        std::vector<component *> clist = flattenModList(models);
+        for (int i = 0; i < clist.size(); i++) {
+            mlist.push_back((model *) clist[i]);
+        }
+        return mlist;
     }
 };
 

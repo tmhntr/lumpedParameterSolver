@@ -23,7 +23,7 @@ The following is a basic implementation of an rcr windkessel compartment. By con
  Note that (module) denotes the probably source of such values
  */
 
-void myoRC::updateAlgebraic(double t, double y[])
+void myoRC::updateDerived(double t, double y[])
 {
     // State inputs
     double p_up, p, D;
@@ -48,10 +48,10 @@ void myoRC::updateAlgebraic(double t, double y[])
         mu = mu * 1e-3; // convert units from units from (cP) to  (N * s / m^2)
         
         // Inputs
-        p_up = y[getInputIndex(0*nSegments+i)];
-        p = y[getInputIndex(0*nSegments+i+1)];
+        p_up = input(0*nSegments+i);
+        p = input(0*nSegments+i+1);
         
-        D = y[getInputIndex(1*nSegments+i+1)];
+        D = input(1*nSegments+i+1);
         D = D*1e-6; // from um to m
         r = D/2.0;
         
@@ -63,7 +63,7 @@ void myoRC::updateAlgebraic(double t, double y[])
         
         q = (p_up - p) / R;
     
-        setAlgebraic(i, q);
+        setDerived(i, q);
     }
 
 }
@@ -85,7 +85,7 @@ void myoRC::getDY(double t, double y[], double * DY)
     for (int i = 0; i < nSegments; i++)
     {
         // State inputs
-        D = y[getInputIndex(1*nSegments+i+1)]; // units: um
+        D = input(1*nSegments+i+1); // units: um
         r = D/2.0; // units: um
         r = r * 1e-6; // unit conversion from um to m
         
@@ -98,12 +98,8 @@ void myoRC::getDY(double t, double y[], double * DY)
         length = length * 1e-2; // convert units from (cm) to (m)
 
         // Algebraic terms
-        q_in = getAlgebraic(i);
-        if (i < nSegments - 1)
-        {
-            q_out = getAlgebraic(i+1);
-        } else
-            q_out = shared(0);
+        q_in = input(2*nSegments+i+1);
+        q_out = input(2*nSegments+i+2);
         
         C = (2*M_PI*pow(r, 2)*length)/(E*(0.0829*r + 0.0405*(1e-6))); // in-line conversion  (0.0405) from um to m
         C = C*nParallel;

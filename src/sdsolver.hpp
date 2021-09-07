@@ -20,7 +20,9 @@
 #include <cvode/cvode.h>               /* prototypes for CVODE fcts., consts.  */
 #include <nvector/nvector_serial.h>    /* access to serial N_Vector            */
 #include <sunmatrix/sunmatrix_dense.h> /* access to dense SUNMatrix            */
+#include <sunmatrix/sunmatrix_sparse.h>
 #include <sunlinsol/sunlinsol_dense.h> /* access to dense SUNLinearSolver      */
+#include <sunlinsol/sunlinsol_klu.h>
 #include <sundials/sundials_types.h>   /* defs. of realtype, sunindextype      */
 
 #if defined(SUNDIALS_EXTENDED_PRECISION)
@@ -69,7 +71,9 @@ class sdsolver: public solver {
 private:
 //    double * DY;
 //    double * y;
-    double _deltat = 0.01;
+    double _deltat = 0.01; // bring deltat out of solver // units: s
+    
+    bool started = false;
     
     realtype reltol, t;
     N_Vector y, abstol;
@@ -109,8 +113,8 @@ public:
 //    sdsolver() : solver() {}
     sdsolver(model * m) : solver(m) { }
     
-    void setDeltaT(double deltat) { _deltat = deltat; }
-    double getDeltaT() { return _deltat; }
+//    void setDeltaT(double deltat) { _deltat = deltat; }
+//    double getDeltaT() { return _deltat; }
     
     double getY(int index) { return Ith(y,index+1); }
     double getT() { return (double) t;}
@@ -155,7 +159,7 @@ public:
 
         
         /* Set the vector absolute tolerance */
-        for(int i=0;i<NEQ;i++) Ith(abstol,i+1) = (realtype) abstol1[0];
+        for(int i=0;i<NEQ;i++) Ith(abstol,i+1) = (realtype) abstol1[i];
 
         /* Call CVodeCreate to create the solver memory and specify the
          * Backward Differentiation Formula */
@@ -180,14 +184,23 @@ public:
         /* Create dense SUNMatrix for use in linear solves */
         A = SUNDenseMatrix(NEQ, NEQ);
         if(check_retval((void *)A, "SUNDenseMatrix", 0)) throw(6);
-
-        /* Create dense SUNLinearSolver object for use by CVode */
+        
+//         Create dense SUNLinearSolver object for use by CVode 
         LS = SUNLinSol_Dense(y, A);
         if(check_retval((void *)LS, "SUNLinSol_Dense", 0)) throw(7);
+
+//        SUNMatrix A = SUNSparseMatrix(NEQ, NEQ, 19, 0);
+//        if(check_retval((void *)A, "SUNSparseMatrix", 0)) throw(6);
+////
+//        LS = SUNLinSol_KLU(y, A);
+//        if(check_retval((void *)LS, "SUNLinSol_KLU", 0)) throw(7);
+//        
 
         /* Call CVodeSetLinearSolver to attach the matrix and linear solver to CVode */
         retval = CVodeSetLinearSolver(cvode_mem, LS, A);
         if(check_retval(&retval, "CVodeSetLinearSolver", 1)) throw(8);
+        
+        if(m->init(this) > 0) throw(9);
         
     }
     
@@ -201,7 +214,7 @@ public:
         
         for(int i=0;i<NEQ;i++) Y[i] = Ith(y,i+1);
         
-        mdl->updateAlgebraic(t, Y);
+        mdl->updateDerived(t, Y);
         
         mdl->getDY((double) t, Y, DYDT);
         
@@ -213,6 +226,11 @@ public:
     
     void solveStep(double tout)
     {
+        if (!started){
+            getModel()->init(this);
+            started = true;
+        }
+        
         CVodeSetUserData(cvode_mem, getModel());
         
         retval = CVode(cvode_mem, (realtype) tout, y, &t, CV_NORMAL);

@@ -9,23 +9,25 @@
 #define heart_hpp
 
 #include <stdio.h>
-#include "submodule.hpp"
+#include "component.hpp"
 #include <math.h>
 #include <vector>
 
 
-class heart: public submodule {
+class heart: public component {
 private:
     int nInlets = 1;
     int nOutlets = 1;
+    double DELTAT;
     
 public:
-    heart(std::vector<std::string> sharedNames, std::vector<std::string> inputNames, std::vector<std::string> algebraicNames, std::vector<std::string> outputNames, std::vector<double> parameters) : submodule("heart", sharedNames, inputNames, algebraicNames, outputNames, parameters)
+    heart(std::vector<std::string> inputNames, std::vector<std::string> algebraicNames, std::vector<std::string> outputNames, std::vector<double> parameters) : component("heart", inputNames, algebraicNames, outputNames, parameters) {  }
+    int init(std::vector<model *> modlist, std::vector<std::string> stateVars, solver * slvr)
     {
-        nInlets = (int) inputNames.size() - 9;
-        nOutlets = (int) sharedNames.size() - 1;
+        DELTAT = slvr->getDeltaT();
+        return component::init(modlist, stateVars, slvr);
     }
-    void updateAlgebraic(double t, double y[]);
+    void updateDerived(double t, double y[]);
     void getDY(double t, double y[], double * DY);
 };
 #endif /* heart_hpp */

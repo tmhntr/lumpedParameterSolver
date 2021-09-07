@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+class solver;
+
 class model {
 private:
     int _neq = 0;
@@ -27,11 +29,13 @@ public:
     
     virtual ~model() {}
     
+    virtual std::vector<model *> components() = 0;
+    
     std::string getName() { return _name; }
-
-    virtual void updateAlgebraic(double t, double y[]) = 0;
+    virtual void updateDerived(double t, double y[]) = 0;
     virtual void getDY(double t, double y[], double * DY) = 0;
-    virtual int init(std::vector<model *> modlist, std::vector<std::string> statevars) = 0;
+    virtual int init(solver * solver) = 0;
+    
     
     void setNEQ(int neq){ _neq = neq; }
     int getNEQ(){ return _neq; }
@@ -70,6 +74,7 @@ public:
 class solver {
     model * mdl;
     printer * _printer;
+    double _deltat;
 public:
     solver() {}
     solver(model * m): solver() { setModel(m); }
@@ -77,6 +82,9 @@ public:
     
     void setModel(model * m) { mdl = m; }
     model * getModel() { return mdl; }
+    
+    void setDeltaT(double deltat) { _deltat = deltat; }
+    double getDeltaT() { return _deltat; }
     
     void setPrinter(printer * p)
     {
