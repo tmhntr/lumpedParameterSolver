@@ -55,23 +55,23 @@ int main(int argc, const char * argv[]) {
     sdsolver * slvr = new sdsolver(mdl, y0.data(), reltol, abstol);
 
 //    slvr->setPrinter(new betterprinter((void *) slvr, mdl));
-    slvr->setPrinter(new basicprinter((void *) slvr));
+    slvr->setPrinter(new betterprinter((void *) slvr));
     slvr->setDeltaT(0.001);
    slvr->print();
-    double tstop = 60.0;
-//     if (argc > 1)
-//         tstop = atof(argv[1]);
-//     for (double t = slvr->getDeltaT(); t <= tstop; t+=slvr->getDeltaT())
-//     {
-//         slvr->print();
-//         try {
-//             slvr->solveStep(t);
-//         } catch (int e) {
-//             cout<<"Solver failed at timestep " << t << endl;
-//             return 1;
-//         }
-//     }
-//     slvr->print();
+    double tstop = 5.0;
+    if (argc > 1)
+        tstop = atof(argv[1]);
+    for (double t = slvr->getDeltaT(); t <= tstop; t+=slvr->getDeltaT())
+    {
+        slvr->print();
+        try {
+            slvr->solveStep(t);
+        } catch (int e) {
+            cout<<"Solver failed at timestep " << t << endl;
+            return 1;
+        }
+    }
+    slvr->print();
 //
 
     std::cout << "ran through!!" << '\n';

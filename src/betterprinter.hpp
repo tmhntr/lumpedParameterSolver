@@ -18,19 +18,19 @@
 
 class betterprinter: public printer {
     solver * _slvr;
-    wrapper * _model;
-    
+    model * _model;
+
     bool titlesPrinted = false;
     bool _split = true;
     bool _printAlg = true;
     int precision = 3;
-    
+
     void printStateTitles(component * model)
     {
 
         std::string fn =fname(model, 's');
         FILE * fid = fopen(fn.data(), "w");
-        
+
         fprintf(fid, "Time");
         for (int i = 0; i < model->getNEQ(); i++)
         {
@@ -39,13 +39,13 @@ class betterprinter: public printer {
         fprintf(fid, "\n");
         fclose(fid);
     }
-    
+
     void printStates(component * model)
     {
         std::string fn =fname(model, 's');
         FILE * fid = fopen(fn.data(), "a");
-        
-        
+
+
         fprintf(fid, "%.4f", _slvr->getT());
         for (int i = 0; i < model->getNEQ(); i++)
         {
@@ -61,7 +61,7 @@ class betterprinter: public printer {
         fprintf(fid, "\n");
         fclose(fid);
     }
-    
+
     std::string fname(model * model, char type)
     {
         std::string fn, modelname;
@@ -79,13 +79,13 @@ class betterprinter: public printer {
         }
         return fn;
     }
-    
+
     void printAlgebraicTitles(component * model)
     {
         std::string fn =fname(model, 'a');
         FILE * fid = fopen(fn.data(), "w");
-        
-        
+
+
         fprintf(fid, "Time");
         for (int i = 0; i < model->getDerivedNameVec().size(); i++)
         {
@@ -99,8 +99,8 @@ class betterprinter: public printer {
     {
         std::string fn =fname(model, 'a');
         FILE * fid = fopen(fn.data(), "a");
-        
-        
+
+
         fprintf(fid, "%.4f", _slvr->getT());
         for (int i = 0; i < model->getDerivedNameVec().size(); i++)
         {
@@ -114,47 +114,47 @@ class betterprinter: public printer {
     {
         if (_split)
         {
-            std::vector<component *> list = _model->flattenModList();
-            for (component * m : list) {
-                printAlgebraicTitles(m);
-                printStateTitles(m);
+            std::vector<model *> list = _model->components();
+            for (model * m : list) {
+                printAlgebraicTitles((component *) m);
+                printStateTitles((component *) m);
             }
         } else
             std::cout << "Printing together not yet implemented" << std::endl;
-        
+
         titlesPrinted = true;
     }
     void printValues()
     {
         if (_split)
         {
-            std::vector<component *> list = _model->flattenModList();
-            for (component * m : list) {
-                printAlgebraic(m);
-                printStates(m);
+            std::vector<model *> list = _model->components();
+            for (model * m : list) {
+                printAlgebraic((component *) m);
+                printStates((component *) m);
             }
         } else
             std::cout << "Printing together not yet implemented" << std::endl;
     }
-    
+
 public:
     // Constructors
     betterprinter() : printer() {  }
-    betterprinter(void * slvr, wrapper * mdl) : printer()
+    betterprinter(void * slvr) : printer()
     {
         setSolver(slvr);
-        setModel(mdl);
+        setModel(_slvr->getModel());
     }
-    
+
     void setSolver(void * slvr) { _slvr = (solver *) slvr; }
-    void setModel(wrapper * mdl) { _model = mdl; }
+    void setModel(model * mdl) { _model = mdl; }
     void print()
     {
         if (!titlesPrinted) printTitles();
         printValues();
     }
-    
-    
+
+
 };
 
 #endif /* betterprinter_h */

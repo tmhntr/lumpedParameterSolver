@@ -25,7 +25,7 @@ public:
 private:
     solver * _slvr;
     bool titlesPrinted = false;
-    int _precision;
+    int _precision = 2;
 
     void printTitles();
 };
