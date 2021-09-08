@@ -26,17 +26,17 @@ public:
         _name = "name";
     }
     model(std::string name) { _name = name; }
-    
+
     virtual ~model() {}
-    
+
     virtual std::vector<model *> components() = 0;
-    
+
     std::string getName() { return _name; }
     virtual void updateDerived(double t, double y[]) = 0;
     virtual void getDY(double t, double y[], double * DY) = 0;
     virtual int init(solver * solver) = 0;
-    
-    
+
+
     void setNEQ(int neq){ _neq = neq; }
     int getNEQ(){ return _neq; }
 
@@ -79,33 +79,33 @@ public:
     solver() {}
     solver(model * m): solver() { setModel(m); }
     virtual ~solver() {}
-    
+
     void setModel(model * m) { mdl = m; }
     model * getModel() { return mdl; }
-    
+
     void setDeltaT(double deltat) { _deltat = deltat; }
     double getDeltaT() { return _deltat; }
-    
+
     void setPrinter(printer * p)
     {
         _printer = p;
         _printer->setSolver(this);
     }
     printer * getPrinter() { return _printer; }
-    
+
     virtual double getY(int index) = 0;
     virtual double getT() = 0;
-    
+
     void print() { _printer->print(); }
-    
+
     virtual void solveStep(double t) = 0;
-    
+
 };
 
 
 class config {
     double abstol, reltol, t_init, t_stop, print_interval, deltat;
-    
+
 };
 
 

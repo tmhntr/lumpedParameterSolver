@@ -1,38 +1,46 @@
 # cmake version to be used
-cmake_minimum_required( VERSION 3.0 )
+cmake_minimum_required( VERSION 3.10 )
 
+# specify the C++ standard
 set(CMAKE_CXX_STANDARD 11)
-
 
 # project name
 project(rat)
 
-list(APPEND CMAKE_PREFIX_PATH /usr/local/Cellar/sundials/5.7.0_1 )
-# find_library(cvode)
-# find_library(sunlinsol)
-
 file(GLOB SOURCES "src/*.cpp")
-add_executable( ${PROJECT_NAME} ${SOURCES})
 
-find_package(sundials REQUIRED cvode sunlinsol)
+add_executable(
+  ${PROJECT_NAME}
+  ${SOURCES})
 
-  # set_property(TARGET cvode PROPERTY IMPORTED_LOCATION /usr/local/Cellar/sundials/5.7.0_1/lib/libsundials_cvode.dylib)
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
-
-  #target_include_directories(cvode INTERFACE /usr/local/Cellar/sundials/5.7.0_1)
+find_package(
+  SUNDIALS
+  5.7.0
+  REQUIRED
+  COMPONENTS
+  sundials_cvode
+  sundials_nvecserial)
 
 target_include_directories(
   ${PROJECT_NAME}
   PRIVATE
     lib/zero_rc
-    ${sundials_INCLUDE_DIR})
+    )
 
-add_library(zero_rc lib/zero_rc/zero_rc.cpp)
+
+
+# message(WARNING ${SUNDIALS_INCLUDE_DIRS})
+
+add_library(
+  zero_rc
+  lib/zero_rc/zero_rc.cpp)
 
 
 target_link_libraries(
   ${PROJECT_NAME}
-  PUBLIC
+  PRIVATE
     zero_rc
-    ${sundials_LIBRARIES}
-    ${sundials_DEPENDENCIES})
+    SUNDIALS::sundials_cvode
+    SUNDIALS::sundials_nvecserial)

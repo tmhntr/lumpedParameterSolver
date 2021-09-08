@@ -10,7 +10,7 @@
 #include "RCR.hpp"
 #include "heart.hpp"
 #include "wrapper.hpp"
-// #include "sdsolver.hpp"
+#include "sdsolver.hpp"
 #include "basicprinter.hpp"
 #include "betterprinter.hpp"
 #include "myoRC.hpp"
@@ -52,13 +52,13 @@ int main(int argc, const char * argv[]) {
 // //    double abstol[] = {1e-6, 1e-6};
 
 
-//     sdsolver * slvr = new sdsolver(mdl, y0.data(), reltol, abstol);
-//
-// //    slvr->setPrinter(new betterprinter((void *) slvr, mdl));
-//     slvr->setPrinter(new basicprinter((void *) slvr));
-//     slvr->setDeltaT(0.001);
-// //    slvr->print();
-//     double tstop = 60.0;
+    sdsolver * slvr = new sdsolver(mdl, y0.data(), reltol, abstol);
+
+//    slvr->setPrinter(new betterprinter((void *) slvr, mdl));
+    slvr->setPrinter(new basicprinter((void *) slvr));
+    slvr->setDeltaT(0.001);
+   slvr->print();
+    double tstop = 60.0;
 //     if (argc > 1)
 //         tstop = atof(argv[1]);
 //     for (double t = slvr->getDeltaT(); t <= tstop; t+=slvr->getDeltaT())
@@ -74,7 +74,7 @@ int main(int argc, const char * argv[]) {
 //     slvr->print();
 //
 
-    std::cout << "ran through" << '\n';
+    std::cout << "ran through!!" << '\n';
     return 0;
 }
 
