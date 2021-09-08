@@ -8,5 +8,8 @@ Current model components installed include:
 - myogenic flow function
 - virtual physiological rat circulation and hemodynamics
 
+Current solver options include:
+- sundials linear dense solver 
+
 coming soon:
 - dialysis
