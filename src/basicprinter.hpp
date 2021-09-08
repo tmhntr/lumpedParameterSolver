@@ -14,7 +14,7 @@
 class basicprinter: public printer {
 public:
     // Constructors
-    basicprinter() : printer() {  }
+    basicprinter();
     basicprinter(void * slvr);
 
     void setPrecision(int precision);
@@ -25,7 +25,7 @@ public:
 private:
     solver * _slvr;
     bool titlesPrinted = false;
-    int _precision
+    int _precision;
 
     void printTitles();
 };

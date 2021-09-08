@@ -1,30 +1,42 @@
 # cmake version to be used
 cmake_minimum_required( VERSION 3.0 )
 
+set(CMAKE_CXX_STANDARD 11)
+
+
 # project name
-project( rat )
+project(rat)
+
+list(APPEND CMAKE_PREFIX_PATH /usr/local/Cellar/sundials/5.7.0_1 )
+# find_library(cvode)
+# find_library(sunlinsol)
+
+find_library(
+  cvode
+  <var>
+  NAMES
+  cvode
+  sundials_cvode
+  PATHS
+  /usr/local/Cellar/sundials/5.7.0_1
+  REQUIRED)
+  add_library(cvode SHARED IMPORTED GLOBAL)
+  set_property(TARGET cvode PROPERTY IMPORTED_LOCATION /usr/local/Cellar/sundials/5.7.0_1/lib/libsundials_cvode.dylib)
+
+
+  target_include_directories(cvode INTERFACE /usr/local/Cellar/sundials/5.7.0_1)
+
+
+
+add_library(zero_rc lib/zero_rc/zero_rc.cpp)
+
 
 file(GLOB SOURCES "src/*.cpp")
-add_executable( ${PROJECT_NAME} ${SOURCES} )
+add_executable( ${PROJECT_NAME} ${SOURCES})
 
-# flags
+target_link_libraries(${PROJECT_NAME} cvode zero_rc)
 
-# files
-
-# include
-include_directories( ./include ./src /usr/local/Cellar/sundials/5.7.0_1/include )
-
-# target
-
-
-# external libs
-add_subdirectory( /usr/local/Cellar/sundials/5.7.0_1/lib libs/sundials )
-target_link_libraries( rat cvode )
-target_link_libraries( rat sunlinsoldense )
-
-# add_subdirectory( ./libs/Randomize )
-# target_link_libraries( binary randomize )
-
-# add_library(randomize STATIC IMPORTED)
-# set_property(TARGET randomize PROPERTY IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/libs/Randomize/librandomize.a)
-# target_link_libraries( binary randomize )
+target_include_directories(
+  ${PROJECT_NAME}
+  PRIVATE
+  lib/zero_rc)

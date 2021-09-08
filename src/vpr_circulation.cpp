@@ -7,12 +7,12 @@
 
 #include "vpr_circulation.hpp"
 #include <math.h>
-#include "Imported/zero_rc.hpp"
+#include <zero_rc.hpp>
 /*
  adapted from beard et al, 2012
  Annals of Biomedical Engineering, Vol. 40, No. 11, November 2012 (Ó 2012) pp. 2365–2378 DOI: 10.1007/s10439-012-0611-7
- 
- 
+
+
  Shared: segment bulk flow rate (from myoRC)
  Input States: D [nSegments], A [nSegments], p [nSegments]
  Algebraic: T_total [nSegments], A_total [nSegments], Tension [nSegments]
@@ -50,10 +50,10 @@ void vpr_circulation::updateDerived(double t, double y[])
     delta_HR_pslow = input(16);
     delta_HR_s = input(17);
     Psi   = input(18);
-    
-    
+
+
 //    V_spt = input(19)];
-    
+
 //    int status = 0;
 //    V_spt = 0.016;
 //    double value;
@@ -164,7 +164,7 @@ void vpr_circulation::updateDerived(double t, double y[])
     double R = pow((A/3.14159),0.5);
     double eps_wall = (R-R0)/R0;
     double delta = eps_wall-eps_1; //Baroreceptor Nerve Ending Strain
-    
+
     //Baroreceptor Firing Rate
     double n;
     if (delta < delta_th)
@@ -210,7 +210,7 @@ void vpr_circulation::updateDerived(double t, double y[])
     // pmod = 1;
     double theta = fmod(Psi,1.0); // fraction of beat (0,1)
     double e_t = exp(-B*pow(pmod,2.0)*pow((theta-C/pmod),2.0)); //Beat Driver Function
-    
+
     int status = 0;
     V_spt = 0.016;
     double value;
@@ -284,7 +284,7 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
     Gamma = 0.75; //Fast Pathway Proportion
     t_HR_ach = 2.5; //Slow Acetylcholine Heart Rate Response Time Constant
     t_HR_nor = 2.1; //Norepinephrine Heart Rate Response Time Constant
-    
+
     // State inputs
     double A, C_ach; // vessel wall mechanics
     double c_nor, delta_HR_pslow, delta_HR_s; // br integration
@@ -293,7 +293,7 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
     c_nor = input(15);
     delta_HR_pslow = input(16);
     delta_HR_s = input(17);
-    
+
     // Derived algebraic vavlues
     double P_ao, Tp; // vessel wall mechanics
     double C1, C2, C3, C4, C5, C6; // vessel wall mechanics
@@ -309,8 +309,8 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
     Ts = input(19+8);
     delta_HR_ps = input(19+9);
     delta_HR_ss = input(19+10);
-    
-    
+
+
     // heart mechanics
     // parameters
     double V_d_spt, P_0_spt, lambda_spt, V_0_spt, P_0_lvf, lambda_lvf, P_0_rvf, lambda_rvf;
@@ -330,7 +330,7 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
     V_lv = input(10);
     V_rv = input(13);
 //    V_spt = input(19)];
-    
+
     // Derived algebraic vavlues
     double HR, e_t, V_spt, E_es_spt, E_es_lvf, E_es_rvf;
     HR = input(19+11);
@@ -340,7 +340,7 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
     E_es_lvf = input(19+15);
     E_es_rvf = input(19+16);
 
-    
+
     // flow mechanics
     // parameters
     double R_av, L_av, R_mt, L_mt, R_pv, L_pv, R_tc, L_tc;
@@ -354,15 +354,15 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
     R_pv  = 0.786;
     R_tc  = 3.386;
     R_av  = 2.57;
-    
-    
+
+
     // State inputs
     double Q_av, Q_mt, Q_pv, Q_tc;
     Q_av = input(5);
     Q_mt = input(6);
     Q_pv = input(7);
     Q_tc = input(8);
-    
+
     // Derived algebraic vavlues
     double P_lv, P_pu, P_rv, P_pa, P_vc, Q_sys, Q_pul;
     P_lv = input(19+17);
@@ -372,15 +372,15 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
     P_vc = input(19+21);
     Q_sys = input(19+22);
     Q_pul = input(19+23);
-    
-    
+
+
 // Pressures, flows, resistances and inertances
     DY[0]= (-(sqrt(A/M_PI)-R0)/Cwall+P_ao)/Bwall ;
     DY[1]= (-C_ach/t_ach+q_ach*Tp);
     DY[2] = (C1*(1.0 - C4*C6) + C2 + C4*C5)/(1.0 - C3 - C4*C6);
 
     DY[3] = (C2 + C4*C5 + C3*DY[2])/(1.0 - C4*C6);
-    
+
     DY[4] =  C5 + C6 * DY[3];
 
 
@@ -393,10 +393,10 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
 //        std::cout << e_t * E_es_spt * (V_spt-V_d_spt) << " + " << (1.0-e_t) * P_0_spt * (exp(lambda_spt * (V_spt-V_0_spt)) - 1.0) << std::endl;
 //        std::cout << e_t * E_es_lvf * (V_lv-V_spt) << " - " << (1.0-e_t) * P_0_lvf * (exp(lambda_lvf * (V_lv-V_spt)) - 1.0) << std::endl;
 //        std::cout << e_t * E_es_rvf * (V_rv+V_spt) << " + " << (1.0-e_t) * P_0_rvf * (exp(lambda_rvf * (V_rv+V_spt)) - 1.0) << std::endl;
-//        
+//
 //    }
-    
-    
+
+
     //Valves
     if (((P_lv-P_ao)<0.0) && (Q_av<0.0))
         DY[5] = 0.0; //Q_av
@@ -404,7 +404,7 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
         DY[5] = (P_lv-P_ao-Q_av*R_av)/L_av;
 //        std::cout << (P_lv-P_ao-Q_av*R_av)/L_av << std::endl;
     }
-    
+
 
     if (((P_pu-P_lv)<0.0) && (Q_mt<0.0))
         DY[6] = 0.0; //Q_mt
@@ -423,19 +423,19 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
     else
         DY[8] = (P_vc-P_rv-Q_tc*R_tc)/L_tc;
 
-    
+
     //Chamber Volumes
     //V_ao
     DY[9] = (Q_av-Q_sys);
-    
+
 //    if (Q_av<0.0)
 //        DY[9] = -Q_sys;
 //    else
 //        DY[9] = (Q_av-Q_sys);
-    
+
     //V_lv
     DY[10] = (Q_mt-Q_av);
-    
+
 //    if ((Q_mt<0.0) && (Q_av<0.0))
 //        DY[10] =  0.0;
 //    else if (Q_mt<0.0)
@@ -444,23 +444,23 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
 //        DY[10] = Q_mt;
 //    else
 //        DY[10] = (Q_mt-Q_av);
-    
+
     //V_pa
     DY[11] = (Q_pv-Q_pul);
-    
+
 //    if (Q_pv<0.0)
 //        DY[11] = -Q_pul;
 //    else
 //        DY[11] = (Q_pv-Q_pul);
-    
+
     //V_pu
     DY[12] = (Q_pul-Q_mt);
-    
+
 //    if (Q_mt<0.0)
 //        DY[12] = Q_pul;
 //    else
 //        DY[12] = (Q_pul-Q_mt);
-    
+
     //V_rv
     DY[13] = (Q_tc-Q_pv);
 
@@ -472,15 +472,15 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
 //        DY[13] = Q_tc;
 //    else
 //        DY[13] = (Q_tc-Q_pv);
-    
+
     //V_vc
     DY[14] = (Q_sys-Q_tc);
-    
+
 //    if (Q_tc<0.0)
 //        DY[14] = Q_sys; //V_vc
 //    else
 //        DY[14] = (Q_sys-Q_tc);
-    
+
 
     DY[15]= (-c_nor/t_nor+q_nor*Ts);
     DY[16]= (-delta_HR_pslow+(1.0-Gamma)*delta_HR_ps)/t_HR_ach;
@@ -490,4 +490,3 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
 
 
 }
-

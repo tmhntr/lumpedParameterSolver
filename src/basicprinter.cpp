@@ -30,7 +30,7 @@ void basicprinter::print()
 }
 
 // private:
-private void basicprinter::printTitles()
+void basicprinter::printTitles()
 {
     std::cout << "Time\t";
     for (int i = 0; i < _slvr->getModel()->getNEQ(); i++)

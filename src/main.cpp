@@ -10,7 +10,7 @@
 #include "RCR.hpp"
 #include "heart.hpp"
 #include "wrapper.hpp"
-#include "sdsolver.hpp"
+// #include "sdsolver.hpp"
 #include "basicprinter.hpp"
 #include "betterprinter.hpp"
 #include "myoRC.hpp"
@@ -31,47 +31,50 @@ int main(int argc, const char * argv[]) {
     // insert code here...
 
     model * rat = new vpr_circulation("Rat", {"A", "C_ach", "eps_1", "eps_2", "eps_3", "Q_av", "Q_mt", "Q_pv", "Q_tc", "V_ao", "V_lv", "V_pa", "V_pu", "V_rv", "V_vc", "c_nor", "delta_HR_pslow", "delta_HR_s", "Psi", "P_ao", "Tp", "C1", "C2", "C3", "C4", "C5", "C6", "Ts", "delta_HR_ps", "delta_HR_ss", "HR", "e_t", "V_spt", "E_es_spt", "E_es_lvf", "E_es_rvf", "P_lv", "P_pu", "P_rv", "P_pa", "P_vc", "Q_sys", "Q_pul"}, {"P_ao", "Tp", "C1", "C2", "C3", "C4", "C5", "C6", "Ts", "delta_HR_ps", "delta_HR_ss", "HR", "e_t", "V_spt", "E_es_spt", "E_es_lvf", "E_es_rvf", "P_lv", "P_pu", "P_rv", "P_pa", "P_vc", "Q_sys", "Q_pul"}, {"A", "C_ach", "eps_1", "eps_2", "eps_3", "Q_av", "Q_mt", "Q_pv", "Q_tc", "V_ao", "V_lv", "V_pa", "V_pu", "V_rv", "V_vc", "c_nor", "delta_HR_pslow", "delta_HR_s", "Psi"}, {});
-    
-    
+
+
     vector<double> y0 = {15.20531, 1.0, 0.2042, 0.232, 0.149, 0, 1.6697, 0.0, 1.2921, 0.5*1.0567, 0.44066, 0.38685, 1.8*5.8495, 0.41389, 1.8*2.3484, 1.249, 0, 0, 0};
 
     wrapper * mdl = new wrapper();
     mdl->addModel(rat);
-    
-    
-    
-    
+
+
+
+
 //    mdl->init();
-    
+
     // vector<double> y0 = {90, 40, 40, 40, 15, 7, 7, 50.0, 20.0, 2.0, 20.0, 1.0, 10.0, 1.0, 3.0, 8.0, 13.0, 80,  173.1, 125.3, 95.41, 62.98, 41.35, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 50.0, 50.0, 50.0, 50.0, 30.0, };
 //    double y0[] = {2.0, 20.0};
     double reltol = 1e-8;
 //    double abstol[] = {1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4};
     double abstol[] = {1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6};
 //    double abstol[] = {1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8};
-//    double abstol[] = {1e-6, 1e-6};
-    sdsolver * slvr = new sdsolver(mdl, y0.data(), reltol, abstol);
-
-//    slvr->setPrinter(new betterprinter((void *) slvr, mdl));
-    slvr->setPrinter(new basicprinter((void *) slvr));
-    slvr->setDeltaT(0.001);
-//    slvr->print();
-    double tstop = 60.0;
-    if (argc > 1)
-        tstop = atof(argv[1]);
-    for (double t = slvr->getDeltaT(); t <= tstop; t+=slvr->getDeltaT())
-    {
-        slvr->print();
-        try {
-            slvr->solveStep(t);
-        } catch (int e) {
-            cout<<"Solver failed at timestep " << t << endl;
-            return 1;
-        }
-    }
-    slvr->print();
+// //    double abstol[] = {1e-6, 1e-6};
 
 
+//     sdsolver * slvr = new sdsolver(mdl, y0.data(), reltol, abstol);
+//
+// //    slvr->setPrinter(new betterprinter((void *) slvr, mdl));
+//     slvr->setPrinter(new basicprinter((void *) slvr));
+//     slvr->setDeltaT(0.001);
+// //    slvr->print();
+//     double tstop = 60.0;
+//     if (argc > 1)
+//         tstop = atof(argv[1]);
+//     for (double t = slvr->getDeltaT(); t <= tstop; t+=slvr->getDeltaT())
+//     {
+//         slvr->print();
+//         try {
+//             slvr->solveStep(t);
+//         } catch (int e) {
+//             cout<<"Solver failed at timestep " << t << endl;
+//             return 1;
+//         }
+//     }
+//     slvr->print();
+//
+
+    std::cout << "ran through" << '\n';
     return 0;
 }
 
