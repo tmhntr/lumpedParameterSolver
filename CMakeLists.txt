@@ -1,5 +1,5 @@
 # cmake version to be used
-cmake_minimum_required( VERSION 3.10 )
+cmake_minimum_required( VERSION 3.16 )
 
 # specify the C++ standard
 set(CMAKE_CXX_STANDARD 11)
@@ -17,7 +17,6 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 find_package(
   SUNDIALS
-  5.7.0
   REQUIRED
   COMPONENTS
   sundials_cvode
