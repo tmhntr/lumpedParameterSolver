@@ -14,6 +14,7 @@
 #include <iomanip>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 
 class betterprinter: public printer {
@@ -66,7 +67,7 @@ class betterprinter: public printer {
     {
         std::string fn, modelname;
         modelname = model->getName();
-        modelname.erase(remove_if(modelname.begin(), modelname.end(), isspace), modelname.end());
+        modelname.erase(std::remove_if(modelname.begin(), modelname.end(), isspace), modelname.end());
         switch (type) {
             case 'a':
                 fn = modelname + "_Derived.dat";
