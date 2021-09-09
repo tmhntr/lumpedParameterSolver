@@ -30,28 +30,29 @@
 //    return failed;
 //}
 
-int component::init(std::vector<model *> modlist, std::vector<std::string> stateVars, solver * slvr)
+int component::init(model * parent)
 {
     bool linked;
+    std::vector<model *> modlist = parent->components();
     int failed = 0;
     for (int i = 0; i < _nInputs; i++)
     {
         linked = false;
         // search through statevars to find the input first
-        for (int j = 0; j < stateVars.size(); j++)
+        for (int j = 0; j < parent->getNEQ(); j++)
         {
-            if (getInputName(i) == stateVars[j])
+            if (getInputName(i) == parent->getStateName(j))
             {
-                links[i] = new stateLinker(slvr, j);
+                links[i] = new stateLinker(this, j);
                 linked = true;
                 break;
             }
         }
-        
+
         std::vector<model *>::iterator m = modlist.begin();
         component * cmp;
         std::vector<std::string> derivedList;
-        
+
         while (!linked && m != modlist.end())
         {
             cmp = (component *) (*m);
@@ -67,7 +68,7 @@ int component::init(std::vector<model *> modlist, std::vector<std::string> state
             }
             m++;
         }
-        
+
         if (!linked)
         {
             std::cout << "Failed to link input " << getInputName(i) << " for component " << this->getName() << std::endl;
@@ -102,6 +103,3 @@ int component::init(std::vector<model *> modlist, std::vector<std::string> state
 //    }
 //    return newModList;
 //}
-
-
-

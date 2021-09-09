@@ -8,7 +8,7 @@
 #ifndef betterprinter_h
 #define betterprinter_h
 
-#include "interface.hpp"
+#include "printer.hpp"
 #include "wrapper.hpp"
 #include "component.hpp"
 #include <iomanip>
@@ -26,134 +26,26 @@ class betterprinter: public printer {
     bool _printAlg = true;
     int precision = 3;
 
-    void printStateTitles(component * model)
-    {
+    void printStateTitles(component * model);
 
-        std::string fn =fname(model, 's');
-        FILE * fid = fopen(fn.data(), "w");
+    void printStates(component * model);
 
-        fprintf(fid, "Time");
-        for (int i = 0; i < model->getNEQ(); i++)
-        {
-            fprintf(fid, "\t%s", model->getStateName(i).data());
-        }
-        fprintf(fid, "\n");
-        fclose(fid);
-    }
+    std::string fname(model * model, char type);
 
-    void printStates(component * model)
-    {
-        std::string fn =fname(model, 's');
-        FILE * fid = fopen(fn.data(), "a");
+    void printAlgebraicTitles(component * model);
+    void printAlgebraic(component * model);
 
-
-        fprintf(fid, "%.4f", _slvr->getT());
-        for (int i = 0; i < model->getNEQ(); i++)
-        {
-            for (int j = 0; j < _model->getNEQ(); j++)
-            {
-                if (model->getStateName(i) == _model->getStateName(j))
-                {
-                    fprintf(fid, "\t%.8f", _slvr->getY(j));
-                    break;
-                }
-            }
-        }
-        fprintf(fid, "\n");
-        fclose(fid);
-    }
-
-    std::string fname(model * model, char type)
-    {
-        std::string fn, modelname;
-        modelname = model->getName();
-        modelname.erase(std::remove_if(modelname.begin(), modelname.end(), isspace), modelname.end());
-        switch (type) {
-            case 'a':
-                fn = modelname + "_Derived.dat";
-                break;
-            case 's':
-                fn = modelname + "_States.dat";
-                break;
-            default:
-                break;
-        }
-        return fn;
-    }
-
-    void printAlgebraicTitles(component * model)
-    {
-        std::string fn =fname(model, 'a');
-        FILE * fid = fopen(fn.data(), "w");
-
-
-        fprintf(fid, "Time");
-        for (int i = 0; i < model->getDerivedNameVec().size(); i++)
-        {
-            fprintf(fid, "\t%s", model->getDerivedName(i).data());
-        }
-        fprintf(fid, "\n");
-        fclose(fid);
-//        titlesPrinted = true;
-    }
-    void printAlgebraic(component * model)
-    {
-        std::string fn =fname(model, 'a');
-        FILE * fid = fopen(fn.data(), "a");
-
-
-        fprintf(fid, "%.4f", _slvr->getT());
-        for (int i = 0; i < model->getDerivedNameVec().size(); i++)
-        {
-            fprintf(fid, "\t%.8f", model->getDerived(i));
-        }
-        fprintf(fid, "\n");
-        fclose(fid);
-    }
-
-    void printTitles()
-    {
-        if (_split)
-        {
-            std::vector<model *> list = _model->components();
-            for (model * m : list) {
-                printAlgebraicTitles((component *) m);
-                printStateTitles((component *) m);
-            }
-        } else
-            std::cout << "Printing together not yet implemented" << std::endl;
-
-        titlesPrinted = true;
-    }
-    void printValues()
-    {
-        if (_split)
-        {
-            std::vector<model *> list = _model->components();
-            for (model * m : list) {
-                printAlgebraic((component *) m);
-                printStates((component *) m);
-            }
-        } else
-            std::cout << "Printing together not yet implemented" << std::endl;
-    }
+    void printTitles();
+    void printValues();
 
 public:
     // Constructors
-    betterprinter() : printer() {  }
-    betterprinter(void * slvr) : printer()
-    {
-        setSolver(slvr);
-        setModel(_slvr->getModel());
-    }
+    betterprinter();
+    betterprinter(void * slvr);
 
-    void setSolver(void * slvr) { _slvr = (solver *) slvr; }
-    void setModel(model * mdl) { _model = mdl; }
-    void print()
-    {
-        if (!titlesPrinted) printTitles();
-        printValues();
-    }
+    void setSolver(void * slvr);
+    void setModel(model * mdl);
+    void print();
 
 
 };

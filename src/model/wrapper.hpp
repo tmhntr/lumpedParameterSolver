@@ -31,9 +31,13 @@ public:
             addModel(*it);
         }
     }
-    
+
     void addModel(model * mdl)
     {
+        if(getY()!=NULL)
+        {
+          mdl->setY(getY());
+        }
         models.push_back(mdl);
         int oldNeq = getNEQ();
         setNEQ(oldNeq + mdl->getNEQ());
@@ -43,7 +47,7 @@ public:
             setStateName(i+oldNeq, mdl->getStateName(i));
         }
     }
-    
+
     model * getModel(int index) { return models[index]; }
     model * getModel(std::string modelName)
     {
@@ -56,12 +60,12 @@ public:
         return NULL;
     }
     std::vector<model *> getModelVec() { return models; }
-    
+
     std::string * getStateNames()
     {
         return stateNames.data();
     }
-    
+
 //    void updateStateNames()
 //    {
 //        // reallocate statenames so that it fits all names.
@@ -81,15 +85,15 @@ public:
 //            it++;
 //        }
 //    }
-    
+
     void updateDerived(double t, double y[])
     {
         for (int i = 0; i <  models.size(); i++)
         {
-            models[i]->updateDerived(t, y); 
+            models[i]->updateDerived(t, y);
         }
     }
-    
+
     void getDY(double t, double y[], double * DY)
     {
         model * mdlPtr;
@@ -102,13 +106,13 @@ public:
             DYPtr+=mdlPtr->getNEQ();
         }
     }
-    
+
     int init(solver * slvr)
     {
         slvr->setModel(this);
         return init(components(), stateNames, slvr);
     }
-    
+
     int init(std::vector<model *> modlist, std::vector<std::string> stateVars, solver * slvr)
     {
         int retval = 0;
@@ -125,14 +129,14 @@ public:
         }
         return retval;
     }
-    
+
     std::vector<component *> flattenModList(std::vector<model *> modlist)
     {
         std::vector<component *> newModList;
         wrapper * wrap;
         for (int i = 0; i < modlist.size(); i++)
         {
-            
+
             if (typeid(wrapper) == typeid(*(modlist[i])))
             {
                 wrap = (wrapper *) modlist[i];
@@ -148,9 +152,9 @@ public:
         }
         return newModList;
     }
-    
+
     std::vector<component *> flattenModList() {return flattenModList(models); }
-    
+
     std::vector<model *> components()
     {
         std::vector<model *> mlist;

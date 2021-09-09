@@ -9,7 +9,7 @@
 #define component_hpp
 
 #include <stdio.h>
-#include "interface.hpp"
+#include "model.hpp"
 //#include "wrapper.hpp"
 #include <math.h>
 #include <string>
@@ -29,19 +29,19 @@ private:
     int _nDerived;
     int _neq;
     double * _y;
-    
-    
+
+
     double * P;
     linker ** links;
     double * derived;
-    
+
     /*
      Names.
      The following are used so set up the model, properly associating submodules to the required shared and input values
      */
     std::string * inputNames;
     std::string * derivedNames;
-   
+
 public:
     // Constructors and destructors
     component(std::string n, int neq, int np, int nIn, int nDerived) : model(n)
@@ -50,17 +50,17 @@ public:
         _nP = np;
         _nInputs = nIn;
         _nDerived = nDerived;
-        
+
         P = (double *) calloc(_nP, sizeof(double));
         derived = (double *) calloc(_nDerived, sizeof(double));
         links = (linker **) calloc(_nInputs, sizeof(linker *));
-        
-        stateNames.resize(getNEQ());
+
+        _stateNames.resize(getNEQ());
         derivedNames = (std::string *) calloc(_nDerived, sizeof(std::string));
-        
+
         inputNames = (std::string *) calloc(_nInputs, sizeof(std::string));
     }
-    
+
     component(std::string n, std::vector<std::string> inputNames, std::vector<std::string> derivedNames, std::vector<std::string> outputNames, std::vector<double> parameters) : component(n, (int) outputNames.size(), (int) parameters.size(), (int) inputNames.size(), (int) derivedNames.size())
     {
         for (int i = 0; i < inputNames.size(); i++)
@@ -73,15 +73,14 @@ public:
             setP(i, parameters[i]);
     }
     virtual ~component(){}
-    
-    std::vector<model *> components() { return {this}; }
-    
-    int init(std::vector<model *> modlist, std::vector<std::string> stateVars, solver * slvr);
-    int init(solver * slvr) { return init({slvr->getModel()->components()}, slvr->getModel()->stateNames, slvr); }
 
-    
+    std::vector<model *> components() { return {this}; }
+
+    int init(model * modlist);
+
+
     // getters and setters; arrays will have getters and setters for each index as well as the array pointer.
-        
+
 //  Parameter Array
     void setP(int index, double value)
     {
@@ -114,7 +113,7 @@ public:
             return P[index];
     }
     std::vector<double> getPVec() { return std::vector<double> (P, P+_nP); }
-    
+
 //  Linker array
 //    For referencing algebraic variables from other submodules
 //    shared(int) is also included to call the get function of the linker.
@@ -146,15 +145,15 @@ public:
             throw (1);
         } else
             return links[index];
-        
+
     }
     std::vector<linker *> getLinkVec() { return std::vector<linker *> (links, links+_nInputs); }
-    
+
     double input(int index)
     {
         return links[index]->get();
     }
-    
+
 
 //  Derived quantity array
 //    This stores all calculated values that are used in the function DYDT
@@ -189,9 +188,9 @@ public:
             return derived[index];
     }
     std::vector<double> getDerivedVec() { return std::vector<double> (derived, derived+_nDerived); }
-    
-    
-    
+
+
+
     void setInputName(int index, std::string inputName)
     {
         if (index < _nInputs)
@@ -223,8 +222,8 @@ public:
             return inputNames[index];
     }
     std::vector<std::string> getInputNameVec() { return std::vector<std::string> (inputNames, inputNames+_nInputs); }
-    
-    
+
+
     void setDerivedName(int index, std::string name)
     {
         if (index < _nDerived)
@@ -256,23 +255,24 @@ public:
             return derivedNames[index];
     }
     std::vector<std::string> getDerivedNameVec() { return std::vector<std::string> (derivedNames, derivedNames+_nDerived); }
-    
+
 };
 
 class stateLinker : public linker
 {
 private:
-    solver * _source;
+    model * _source;
     int _index;
 public:
-    stateLinker(solver * src, int index) : linker()
+    stateLinker(model * src, int index) : linker()
     {
         _source = src;
         _index = index;
     }
     double get()
     {
-        return _source->getY(_index);
+        double * Y = _source->getY();
+        return Y[_index];
     }
 };
 

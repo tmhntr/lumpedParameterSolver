@@ -19,14 +19,14 @@ private:
     int nInlets = 1;
     int nOutlets = 1;
     double DELTAT;
-    
+
 public:
     heart(std::vector<std::string> inputNames, std::vector<std::string> algebraicNames, std::vector<std::string> outputNames, std::vector<double> parameters) : component("heart", inputNames, algebraicNames, outputNames, parameters) {  }
-    int init(std::vector<model *> modlist, std::vector<std::string> stateVars, solver * slvr)
-    {
-        DELTAT = slvr->getDeltaT();
-        return component::init(modlist, stateVars, slvr);
-    }
+    // int init(model * parent)
+    // {
+    //     DELTAT = slvr->getDeltaT();
+    //     return component::init(parent);
+    // }
     void updateDerived(double t, double y[]);
     void getDY(double t, double y[], double * DY);
 };

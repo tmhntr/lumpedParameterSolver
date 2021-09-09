@@ -13,11 +13,7 @@
 #include <vector>
 
 class model {
-private:
-    int _neq = 0;
-    std::string _name;
 public:
-    std::vector<std::string> stateNames;
 
     model()
     {
@@ -28,22 +24,26 @@ public:
     virtual ~model() {}
 
     virtual std::vector<model *> components() = 0;
+    virtual int init(model * parent) = 0;
+
+    virtual void updateDerived(double t, double y[]) = 0;
+    virtual void getDY(double t, double y[], double * DY) = 0;
+
+    virtual double getDerived(int index) = 0;
+    virtual std::string getDerivedName(int index) = 0;
+
+    void setY(double * y) { _y = y; }
+    double * getY() { return _y; }
 
     void setName(std::string name) { _name = name; }
     std::string getName() { return _name; }
-    
-    virtual void updateDerived(double t, double y[]) = 0;
-    virtual void getDY(double t, double y[], double * DY) = 0;
-    virtual int init(solver * solver) = 0;
-
-
     void setNEQ(int neq){ _neq = neq; }
     int getNEQ(){ return _neq; }
 
     void setStateName(int index, std::string stateName)
     {
         if (index < getNEQ())
-            stateNames[index] = stateName;
+            _stateNames[index] = stateName;
         else
         {
             std::cout << index << " outside of stateName array range." << std::endl;
@@ -58,9 +58,17 @@ public:
             throw (index);
         }
         else
-            return stateNames[index];
+            return _stateNames[index];
     }
+protected:
+    std::vector<std::string> _stateNames;
+private:
+    int _neq = 0;
+    std::string _name;
+    double * _y;
 
+
+    int _nDerived;
 };
 
 #endif /* model_hpp */
