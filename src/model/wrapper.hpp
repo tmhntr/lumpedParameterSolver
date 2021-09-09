@@ -36,6 +36,8 @@ public:
 
     std::string * getStateNames();
 
+    void setY(double * y);
+
     void updateDerived(double t, double y[]);
 
     void getDY(double t, double y[], double * DY);

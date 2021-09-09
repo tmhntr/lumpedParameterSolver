@@ -10,8 +10,8 @@ project(printer)
 add_library(
   printer
   STATIC
-    betterprinter.cpp
-    basicprinter.cpp)
+  betterprinter.cpp
+  basicprinter.cpp)
 
 target_include_directories(
   printer

@@ -272,7 +272,15 @@ public:
     double get()
     {
         double * Y = _source->getY();
-        return Y[_index];
+        try
+        {
+          return Y[_index];
+        }
+        catch (...)
+        {
+          std::cout << "index error in y linker" << std::endl;
+        }
+        return 0;
     }
 };
 

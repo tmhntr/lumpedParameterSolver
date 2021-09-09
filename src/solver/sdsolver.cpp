@@ -122,6 +122,8 @@ int sdsolver::RHS(realtype t, N_Vector y, N_Vector ydot, void *user_data)
 
     for(int i=0;i<NEQ;i++) Y[i] = Ith(y,i+1);
 
+    mdl->setY(Y);
+
     mdl->updateDerived(t, Y);
 
     mdl->getDY((double) t, Y, DYDT);

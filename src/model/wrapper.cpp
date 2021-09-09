@@ -23,7 +23,7 @@ double wrapper::getDerived(int index)
     return (*itModel)->getDerived(index);
   } catch (...) {
     std::cout << "Something went wrong in wrapper::getDerived" << std::endl;
-    return NULL;
+    throw;
   }
 }
 
@@ -55,7 +55,7 @@ void wrapper::addModel(model * mdl)
     models.push_back(mdl);
     int oldNeq = getNEQ();
     setNEQ(oldNeq + mdl->getNEQ());
-    stateNames.resize(getNEQ());
+    _stateNames.resize(getNEQ());
     for (int i = 0; i < mdl->getNEQ(); i++)
     {
         setStateName(i+oldNeq, mdl->getStateName(i));
@@ -77,7 +77,16 @@ std::vector<model *> wrapper::getModelVec() { return models; }
 
 std::string * wrapper::getStateNames()
 {
-    return stateNames.data();
+    return _stateNames.data();
+}
+
+void wrapper::setY(double * y)
+{
+  // std::vector<model *> mdls = getModelVec();
+  for (std::vector<model *>::iterator it = models.begin(); it != models.end(); it++)
+  {
+      (*it)->setY(y);
+  }
 }
 
 void wrapper::updateDerived(double t, double y[])
@@ -101,7 +110,7 @@ void wrapper::getDY(double t, double y[], double * DY)
     }
 }
 
-int init(model * parent)
+int wrapper::init(model * parent)
 {
     int retval = 0;
 //        std::vector<component *> flatmodlist = flattenModList(modlist);
@@ -119,7 +128,7 @@ int init(model * parent)
     return retval;
 }
 
-std::vector<component *> flattenModList(std::vector<model *> modlist)
+std::vector<component *> wrapper::flattenModList(std::vector<model *> modlist)
 {
     std::vector<component *> newModList;
     wrapper * wrap;
@@ -142,9 +151,9 @@ std::vector<component *> flattenModList(std::vector<model *> modlist)
     return newModList;
 }
 
-std::vector<component *> flattenModList() {return flattenModList(models); }
+std::vector<component *> wrapper::flattenModList() {return flattenModList(models); }
 
-std::vector<model *> components()
+std::vector<model *> wrapper::components()
 {
     std::vector<model *> mlist;
     std::vector<component *> clist = flattenModList(models);
