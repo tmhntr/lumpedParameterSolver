@@ -50,6 +50,7 @@ public:
             throw (index);
         }
     }
+    
     std::string getStateName(int index)
     {
         if (index >= getNEQ())

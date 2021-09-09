@@ -81,3 +81,27 @@ target_link_libraries(
   ${PROJECT_NAME}
   PRIVATE
     myLib)
+
+
+
+
+# Make some test cases
+
+add_executable(
+  testmodel
+  ${CMAKE_SOURCE_DIR}/test/model/test_main.cpp)
+
+target_include_directories(
+  testmodel
+  PUBLIC
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/src/model
+    ${CMAKE_SOURCE_DIR}/src/model/zero_rc
+    ${CMAKE_SOURCE_DIR}/src/printer
+    ${CMAKE_SOURCE_DIR}/src/solver
+    ${SUNDIALS_INCLUDE_DIRS})
+
+target_link_libraries(
+  testmodel
+  PRIVATE
+    myLib)

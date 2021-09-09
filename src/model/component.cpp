@@ -10,25 +10,34 @@
 #include <vector>
 #include <type_traits>
 
+component::component(std::string n, int neq, int np, int nIn, int nDerived) : model(n)
+{
+    setNEQ(neq);
+    _nP = np;
+    _nInputs = nIn;
+    _nDerived = nDerived;
 
-//int component::link(std::vector<component *> modlist)
-//{
-//
-////    std::vector<submodule *> flatModList = flattenModList(modlist);
-//    int failed = 0;
-//    for (int i = 0; i < _nLinks; i++)
-//    {
-//
-//        try {
-//            links[i] = new linker(sharedNames[i], modlist);
-//        } catch (int e) {
-//            failed ++;
-//        }
-//    }
-//    if (failed != 0)
-//        std::cout << failed << " links failed." << std::endl;
-//    return failed;
-//}
+    P = (double *) calloc(_nP, sizeof(double));
+    derived = (double *) calloc(_nDerived, sizeof(double));
+    links = (linker **) calloc(_nInputs, sizeof(linker *));
+
+    _stateNames.resize(getNEQ());
+    derivedNames = (std::string *) calloc(_nDerived, sizeof(std::string));
+
+    inputNames = (std::string *) calloc(_nInputs, sizeof(std::string));
+}
+
+component::component(std::string n, std::vector<std::string> inputNames, std::vector<std::string> derivedNames, std::vector<std::string> outputNames, std::vector<double> parameters) : component(n, (int) outputNames.size(), (int) parameters.size(), (int) inputNames.size(), (int) derivedNames.size())
+{
+    for (int i = 0; i < inputNames.size(); i++)
+        setInputName(i, inputNames[i]);
+    for (int i = 0; i < derivedNames.size(); i++)
+        setDerivedName(i, derivedNames[i]);
+    for (int i = 0; i < outputNames.size(); i++)
+        setStateName(i, outputNames[i]);
+    for (int i = 0; i < parameters.size(); i++)
+        setP(i, parameters[i]);
+}
 
 int component::init(model * parent)
 {
@@ -78,28 +87,153 @@ int component::init(model * parent)
     return failed;
 }
 
+void component::check(int index, int size)
+{
+  if (index >= size)
+  {
+      std::cout << index << " outside of array range." << std::endl;
+      throw (1);
+  }
+}
 
+std::vector<model *> component::components() { return {this}; }
 
-//std::vector<submodule *> submodule::flattenModList(std::vector<model *> modlist)
-//{
-//    std::vector<submodule *> newModList;
-//    wrapper * wrap;
-//    for (int i = 0; i < modlist.size(); i++)
-//    {
-//
-//        if (typeid(wrapper) == typeid(*(modlist[i])))
-//        {
-//            wrap = (wrapper *) modlist[i];
-//            std::vector<submodule *> newNewModList = flattenModList(wrap->getModelVec());
-//            for (int j = 0; j  < newNewModList.size(); j++)
-//            {
-//                newModList.push_back((submodule *) newNewModList[j]);
-//            }
-//        } else
-//        {
-//            newModList.push_back((submodule *) modlist[i]);
-//
-//        }
-//    }
-//    return newModList;
-//}
+// getters and setters; arrays will have getters and setters for each index as well as the array pointer.
+
+//  Parameter Array
+void component::setP(int index, double value)
+{
+    check(index, _nP);
+    P[index] = value;
+}
+void component::setP(std::vector<double> P_vec)
+{
+    if (P_vec.size() == _nP)
+        for (int i = 0; i < P_vec.size(); i++) P[i] = P_vec[i];
+    else
+    {
+        std::cout << "Input vector is " << P_vec.size() << ", nParameters is " << _nP <<". Wrong size." << std::endl;
+        throw (1);
+    }
+}
+double component::getP(int index)
+{
+    check(index, _nP);
+    return P[index];
+}
+
+std::vector<double> component::getPVec()
+{
+    return std::vector<double> (P, P+_nP);
+}
+
+//  Linker array
+//    For referencing algebraic variables from other submodules
+//    shared(int) is also included to call the get function of the linker.
+void component::setLink(int index, linker * l)
+{
+    check(index, _nInputs);
+    links[index] = l;
+}
+void component::setLink(std::vector<linker *> Link_vec)
+{
+    if (Link_vec.size() == _nInputs)
+        for (int i = 0; i < Link_vec.size(); i++) links[i] = Link_vec[i];
+    else
+    {
+        std::cout << "Input vector is " << Link_vec.size() << ", nInputs is " << _nInputs <<". Wrong size." << std::endl;
+        throw (1);
+    }
+}
+linker * component::getLink(int index)
+{
+    check(index, _nInputs);
+    return links[index];
+}
+std::vector<linker *> component::getLinkVec()
+{
+    return std::vector<linker *> (links, links+_nInputs);
+}
+
+double component::input(int index)
+{
+    check(index, _nInputs);
+    return links[index]->get();
+}
+
+//  Derived quantity array
+//    This stores all calculated values that are used in the function DYDT
+void component::setDerived(int index, double value)
+{
+    check(index, _nDerived);
+    derived[index] = value;
+}
+void component::setDerived(std::vector<double> A_vec)
+{
+    if (A_vec.size() == _nDerived)
+        for (int i = 0; i < A_vec.size(); i++) derived[i] = A_vec[i];
+    else
+    {
+        std::cout << "Input vector is " << A_vec.size() << ", nDerived is " << _nDerived <<". Wrong size." << std::endl;
+        throw (1);
+    }
+}
+double component::getDerived(int index)
+{
+    check(index, _nDerived);
+    return derived[index];
+}
+std::vector<double> component::getDerivedVec()
+{
+    return std::vector<double> (derived, derived+_nDerived);
+}
+
+void component::setInputName(int index, std::string inputName)
+{
+    check(index, _nInputs);
+    inputNames[index] = inputName;
+}
+void component::setInputName(std::vector<std::string> Name_vec)
+{
+    if (Name_vec.size() == _nInputs)
+        for (int i = 0; i < Name_vec.size(); i++) inputNames[i] = Name_vec[i];
+    else
+    {
+        std::cout << "Input vector is " << Name_vec.size() << ", nInputs is " << _nInputs <<". Wrong size." << std::endl;
+        throw (1);
+    }
+}
+std::string component::getInputName(int index)
+{
+    check(index, _nInputs);
+    return inputNames[index];
+}
+std::vector<std::string> component::getInputNameVec()
+{
+    return std::vector<std::string> (inputNames, inputNames+_nInputs);
+}
+
+void component::setDerivedName(int index, std::string name)
+{
+    check(index, _nDerived);
+    derivedNames[index] = name;
+}
+void component::setDerivedName(std::vector<std::string> Name_vec)
+{
+    if (Name_vec.size() == _nDerived)
+        for (int i = 0; i < Name_vec.size(); i++) derivedNames[i] = Name_vec[i];
+    else
+    {
+        std::cout << "Input vector is " << Name_vec.size() << ", nParameters is " << _nDerived <<". Wrong size." << std::endl;
+        throw (1);
+    }
+}
+std::string component::getDerivedName(int index)
+{
+    check(index, _nDerived);
+    return derivedNames[index];
+}
+std::vector<std::string> component::getDerivedNameVec()
+{
+    return std::vector<std::string> (derivedNames, derivedNames+_nDerived);
+}
