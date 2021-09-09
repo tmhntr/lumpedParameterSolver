@@ -9,8 +9,42 @@ wrapper::wrapper(std::vector<model *> mdls) : wrapper()
     }
 }
 
+double wrapper::getDerived(int index)
+{
+  std::vector<model *> models = components();
+  std::vector<model *>::iterator itModel = models.begin();
+  try
+  {
+    while (index >= (*itModel)->getNEQ())
+    {
+      index = index - (*itModel)->getNEQ();
+      itModel++;
+    }
+    return (*itModel)->getDerived(index);
+  } catch (...) {
+    std::cout << "Something went wrong in wrapper::getDerived" << std::endl;
+    return NULL;
+  }
+}
+
 std::string wrapper::getDerivedName(int index)
-{ return ""; }
+{
+  std::vector<model *> models = components();
+  std::vector<model *>::iterator itModel = models.begin();
+  try
+  {
+    while (index >= (*itModel)->getNEQ())
+    {
+      index = index - (*itModel)->getNEQ();
+      itModel++;
+    }
+    return (*itModel)->getDerivedName(index);
+  } catch (...) {
+    std::cout << "Something went wrong in wrapper::getDerivedName" << std::endl;
+    return "";
+  }
+
+}
 
 void wrapper::addModel(model * mdl)
 {
@@ -65,12 +99,6 @@ void wrapper::getDY(double t, double y[], double * DY)
         mdlPtr->getDY(t, y, DYPtr);
         DYPtr+=mdlPtr->getNEQ();
     }
-}
-
-int wrapper::init(solver * slvr)
-{
-    slvr->setModel(this);
-    return init(components(), stateNames, slvr);
 }
 
 int init(model * parent)

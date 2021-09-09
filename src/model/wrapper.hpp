@@ -27,6 +27,7 @@ public:
     wrapper();
     wrapper(std::vector<model *> mdls);
     std::string getDerivedName(int index);
+    double getDerived(int index);
     void addModel(model * mdl);
 
     model * getModel(int index);
@@ -39,9 +40,7 @@ public:
 
     void getDY(double t, double y[], double * DY);
 
-    int init(solver * slvr);
-
-    int init(std::vector<model *> modlist, std::vector<std::string> stateVars, solver * slvr);
+    int init(model * parent);
 
     std::vector<component *> flattenModList(std::vector<model *> modlist);
 
