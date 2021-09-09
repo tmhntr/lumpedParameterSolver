@@ -1,15 +1,13 @@
 # cmake version to be used
 cmake_minimum_required( VERSION 3.16 )
 
+project(solver)
+
 # specify the C++ standard
 set(CMAKE_CXX_STANDARD 11)
 
-# project name
-project(solver)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/Modules")
 
-add_library(solver STATIC sdsolver.cpp)
-
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 find_package(
   SUNDIALS
@@ -18,22 +16,20 @@ find_package(
   sundials_cvode
   sundials_nvecserial)
 
+add_library(
+  solver
+  STATIC
+    sdsolver.cpp)
+
 target_include_directories(
   solver
-  PRIVATE
-    lib/zero_rc
-    )
+  PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
+    ${SUNDIALS_INCLUDE_DIRS})
 
 target_link_libraries(
   solver
   PRIVATE
-    zero_rc
     SUNDIALS::sundials_cvode
     SUNDIALS::sundials_nvecserial)
-
-target_include_directories(model
-  PUBLIC
-    $<INSTALL_INTERFACE:include/model>  # <prefix>/include/printer
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/model>
-    ${CMAKE_SOURCE_DIR}/src/solver
-    ${SUNDIALS_INCLUDE_DIRS})

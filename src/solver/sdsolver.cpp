@@ -1,6 +1,6 @@
 #include "sdsolver.hpp"
 
-static int sdsolver::check_retval(void *returnvalue, const char *funcname, int opt)
+int sdsolver::check_retval(void *returnvalue, const char *funcname, int opt)
 {
   int *retval;
 
@@ -108,11 +108,11 @@ sdsolver::sdsolver(model * m, double INITIAL_CONDITIONS[], double reltol1, doubl
     retval = CVodeSetLinearSolver(cvode_mem, LS, A);
     if(check_retval(&retval, "CVodeSetLinearSolver", 1)) throw(8);
 
-    if(m->init(this) > 0) throw(9);
+    if(m->init(getModel()) > 0) throw(9);
 
 }
 
-static int sdsolver::RHS(realtype t, N_Vector y, N_Vector ydot, void *user_data)
+int sdsolver::RHS(realtype t, N_Vector y, N_Vector ydot, void *user_data)
 {
     model *mdl;
     mdl = (model *) user_data;
@@ -135,7 +135,7 @@ static int sdsolver::RHS(realtype t, N_Vector y, N_Vector ydot, void *user_data)
 void sdsolver::solveStep(double tout)
 {
     if (!started){
-        getModel()->init(this);
+        getModel()->init(getModel());
         started = true;
     }
 

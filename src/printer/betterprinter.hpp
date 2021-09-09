@@ -8,9 +8,10 @@
 #ifndef betterprinter_h
 #define betterprinter_h
 
-#include "printer.hpp"
-#include "wrapper.hpp"
-#include "component.hpp"
+#include "printer/printer.hpp"
+#include "model/model.hpp"
+#include "model/component.hpp"
+#include "solver/solver.hpp"
 #include <iomanip>
 #include <vector>
 #include <string>

@@ -9,7 +9,7 @@
 #define sdsolver_hpp
 
 #include <stdio.h>
-#include "interface.hpp"
+#include "solver.hpp"
 
 #include <stdlib.h>
 //#include <json-c/json.h>

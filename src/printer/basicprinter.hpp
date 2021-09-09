@@ -8,7 +8,10 @@
 #ifndef basicprinter_hpp
 #define basicprinter_hpp
 
-#include "interface.hpp"
+#include "printer/printer.hpp"
+#include "model/model.hpp"
+#include "model/component.hpp"
+#include "solver/solver.hpp"
 // #include <iomanip>
 
 class basicprinter: public printer {

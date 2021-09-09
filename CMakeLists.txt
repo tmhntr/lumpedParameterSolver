@@ -15,31 +15,15 @@ add_executable(
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
-find_package(
-  SUNDIALS
-  REQUIRED
-  COMPONENTS
-  sundials_cvode
-  sundials_nvecserial)
+set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} src src/model src/printer src/solver)
 
-target_include_directories(
-  ${PROJECT_NAME}
-  PRIVATE
-    lib/zero_rc
-    )
-
-
-
-# message(WARNING ${SUNDIALS_INCLUDE_DIRS})
-
-add_library(
-  zero_rc
-  lib/zero_rc/zero_rc.cpp)
-
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/model)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/printer)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/solver)
 
 target_link_libraries(
   ${PROJECT_NAME}
   PRIVATE
-    zero_rc
-    SUNDIALS::sundials_cvode
-    SUNDIALS::sundials_nvecserial)
+    model
+    printer}
+    solver)

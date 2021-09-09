@@ -6,16 +6,16 @@
 //
 
 #include <iostream>
-#include "interface.hpp"
-#include "RCR.hpp"
-#include "heart.hpp"
-#include "wrapper.hpp"
-#include "sdsolver.hpp"
-#include "basicprinter.hpp"
-#include "betterprinter.hpp"
-#include "myoRC.hpp"
-#include "myogenic.hpp"
-#include "vpr_circulation.hpp"
+// #include "interface.hpp"
+#include "model/RCR.hpp"
+#include "model/heart.hpp"
+#include "model/wrapper.hpp"
+#include "solver/sdsolver.hpp"
+#include "printer/basicprinter.hpp"
+#include "printer/betterprinter.hpp"
+#include "model/myoRC.hpp"
+#include "model/myogenic.hpp"
+#include "model/vpr_circulation.hpp"
 #include <string>
 
 
