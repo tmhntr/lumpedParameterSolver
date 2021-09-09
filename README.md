@@ -15,16 +15,22 @@ coming soon:
 - dialysis
 
 to install and run:
+
 enter the following lines into terminal
 
 if you do not have sundials installed run:
+
 brew upgrade
+
 brew install sundials
 
 to clone this git repository run:
+
 git clone -b external-build https://github.com/tmhntr/model.git 
 
 mkdir model/build
+
 cd model/build
+
 cmake .. && make && ./rat
 
