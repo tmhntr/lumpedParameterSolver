@@ -34,6 +34,7 @@ public:
 
     void setY(double * y) { _y = y; }
     double * getY() { return _y; }
+    double getY(int index) { return _y[index]; }
 
     void setName(std::string name) { _name = name; }
     std::string getName() { return _name; }
@@ -50,7 +51,7 @@ public:
             throw (index);
         }
     }
-    
+
     std::string getStateName(int index)
     {
         if (index >= getNEQ())

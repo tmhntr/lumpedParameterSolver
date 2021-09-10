@@ -32,7 +32,7 @@ public:
 
     std::vector<model *> components();
 
-    int init(model * modlist);
+    int init(model * parent);
 
 
     // getters and setters; arrays will have getters and setters for each index as well as the array pointer.
@@ -53,6 +53,11 @@ public:
 
     double input(int index);
 
+    void setInputName(int index, std::string inputName);
+    void setInputName(std::vector<std::string> Name_vec);
+    std::string getInputName(int index);
+    std::vector<std::string> getInputNameVec();
+
 
 //  Derived quantity array
 //    This stores all calculated values that are used in the function DYDT
@@ -60,12 +65,6 @@ public:
     void setDerived(std::vector<double> A_vec);
     double getDerived(int index);
     std::vector<double> getDerivedVec();
-
-    void setInputName(int index, std::string inputName);
-    void setInputName(std::vector<std::string> Name_vec);
-    std::string getInputName(int index);
-    std::vector<std::string> getInputNameVec();
-
 
     void setDerivedName(int index, std::string name);
     void setDerivedName(std::vector<std::string> Name_vec);
@@ -76,8 +75,6 @@ private:
     int _nInputs;
     int _nDerived;
     int _neq;
-    double * _y;
-
 
     double * P;
     linker ** links;
@@ -106,16 +103,7 @@ public:
     }
     double get()
     {
-        double * Y = _source->getY();
-        try
-        {
-          return Y[_index];
-        }
-        catch (...)
-        {
-          std::cout << "index error in y linker" << std::endl;
-        }
-        return 0;
+        return _source->getY(_index);
     }
 };
 

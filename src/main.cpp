@@ -57,7 +57,7 @@ int main(int argc, const char * argv[]) {
 //    slvr->setPrinter(new betterprinter((void *) slvr, mdl));
     slvr->setPrinter(new betterprinter((void *) slvr));
     slvr->setDeltaT(0.001);
-   slvr->print();
+   // slvr->print();
     double tstop = 5.0;
     if (argc > 1)
         tstop = atof(argv[1]);
