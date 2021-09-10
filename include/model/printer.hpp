@@ -8,6 +8,7 @@
 #ifndef printer_hpp
 #define printer_hpp
 
+
 class printer {
 public:
     printer() {}

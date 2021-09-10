@@ -10,12 +10,12 @@
 
 // public:
 basicprinter::basicprinter() : printer() {  }
-basicprinter::basicprinter(solver * slvr) : printer() { setSolver(slvr); }
+basicprinter::basicprinter(solver * slvr) : printer() { setSolver((void *) slvr); }
 
 void basicprinter::setPrecision(int precision) { _precision = precision; }
 int basicprinter::getPrecision() { return _precision; }
 
-void basicprinter::setSolver(solver * slvr) { _slvr = (solver *) slvr; }
+void basicprinter::setSolver(void * slvr) { _slvr = (solver *) slvr; }
 void basicprinter::print()
 {
     std::cout << std::fixed << std::setprecision(getPrecision());

@@ -115,11 +115,11 @@ void betterprinter::printValues()
 betterprinter::betterprinter() : printer() {  }
 betterprinter::betterprinter(solver * slvr) : printer()
 {
-    setSolver(slvr);
+    setSolver((void *) slvr);
     setModel(_slvr->getModel());
 }
 
-void betterprinter::setSolver(solver * slvr) { _slvr = (solver *) slvr; }
+void betterprinter::setSolver(void * slvr) { _slvr = (solver *) slvr; }
 void betterprinter::setModel(component * mdl) { _model = mdl; }
 void betterprinter::print()
 {

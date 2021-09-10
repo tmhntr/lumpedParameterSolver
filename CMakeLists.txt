@@ -30,6 +30,31 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 add_subdirectory(src)
 
 
+#make rat
+add_executable(
+  rat
+  ${CMAKE_SOURCE_DIR}/src/main.cpp)
+
+find_package(
+  SUNDIALS
+  REQUIRED
+  COMPONENTS
+  sundials_cvode
+  sundials_nvecserial)
+
+target_include_directories(
+  rat
+  PUBLIC
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${SUNDIALS_INCLUDE_DIRS})
+
+target_link_libraries(
+  rat
+  PRIVATE
+    component
+    printer
+    solver)
 
 # Make some test cases
 
@@ -40,7 +65,8 @@ add_executable(
 target_include_directories(
   test
   PUBLIC
-    ${CMAKE_SOURCE_DIR}/src/)
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include)
 
 target_link_libraries(
   test

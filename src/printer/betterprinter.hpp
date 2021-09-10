@@ -44,7 +44,7 @@ public:
     betterprinter();
     betterprinter(solver * slvr);
 
-    void setSolver(solver * slvr);
+    void setSolver(void * slvr);
     void setModel(component * mdl);
     void print();
 

@@ -22,7 +22,7 @@ public:
 
     void setPrecision(int precision);
     int getPrecision();
-    void setSolver(solver * slvr);
+    void setSolver(void * slvr);
     void print();
 
 private:

@@ -1,9 +1,22 @@
 #include "component/myoRC.hpp"
 #include "component/myogenic.hpp"
+#include "component/component_wrapper.hpp"
 
 // Returns a full myogenic compartment
 // not currently working
 
+
+
+vector<string> expand(vector<string> vec, int nSegs)
+{
+    vector<string> expanded;
+    for (string s : vec)
+    {
+        for (int i = 1; i <= nSegs; i++)
+            expanded.push_back(s + "_" + to_string(i));
+    }
+    return expanded;
+}
 
 component * myocompartment()
 {
