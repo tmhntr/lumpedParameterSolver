@@ -1,15 +1,15 @@
 //
-//  submodule.hpp
+//  component_model.hpp
 //  model
 //
 //  Created by Tim  Hunter on 2021-08-21.
 //
 
-#ifndef component_hpp
-#define component_hpp
+#ifndef component_model_hpp
+#define component_model_hpp
 
 #include <stdio.h>
-#include "model.hpp"
+#include <model/component.hpp>
 //#include "wrapper.hpp"
 #include <math.h>
 #include <string>
@@ -22,17 +22,17 @@ public:
 };
 
 
-class component: public model {
+class component_model: public component {
 public:
     // Constructors and destructors
-    component(std::string n, int neq, int np, int nIn, int nDerived);
+    component_model(std::string n, int neq, int np, int nIn, int nDerived);
 
-    component(std::string n, std::vector<std::string> inputNames, std::vector<std::string> derivedNames, std::vector<std::string> outputNames, std::vector<double> parameters);
-    virtual ~component(){}
+    component_model(std::string n, std::vector<std::string> inputNames, std::vector<std::string> derivedNames, std::vector<std::string> outputNames, std::vector<double> parameters);
+    virtual ~component_model(){}
 
-    std::vector<model *> components();
+    std::vector<component *> components();
 
-    int init(model * parent);
+    int init(component * parent);
 
 
     // getters and setters; arrays will have getters and setters for each index as well as the array pointer.
@@ -93,10 +93,10 @@ private:
 class stateLinker : public linker
 {
 private:
-    model * _source;
+    component * _source;
     int _index;
 public:
-    stateLinker(model * src, int index) : linker()
+    stateLinker(component * src, int index) : linker()
     {
         _source = src;
         _index = index;
@@ -111,9 +111,9 @@ class derivedLinker : public linker
 {
 private:
     int _index;
-    component * _source;
+    component_model * _source;
 public:
-    derivedLinker(component * src, int index) : linker()
+    derivedLinker(component_model * src, int index) : linker()
     {
         _source = src;
         _index = index;
@@ -155,4 +155,4 @@ public:
 
 
 
-#endif /* component_hpp */
+#endif /* component_model_hpp */

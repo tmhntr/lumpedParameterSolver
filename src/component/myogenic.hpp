@@ -9,13 +9,13 @@
 #define myogenic_hpp
 
 #include <stdio.h>
-#include "component.hpp"
+#include "component_model.hpp"
 
-class myogenic: public component {
+class myogenic: public component_model {
 private:
     int nSegments = 1;
 public:
-    myogenic(std::string name, std::vector<std::string> inputNames, std::vector<std::string> algebraicNames, std::vector<std::string> outputNames, std::vector<double> parameters) : component(name, inputNames, algebraicNames, outputNames, parameters)
+    myogenic(std::string name, std::vector<std::string> inputNames, std::vector<std::string> algebraicNames, std::vector<std::string> outputNames, std::vector<double> parameters) : component_model(name, inputNames, algebraicNames, outputNames, parameters)
     {
 //        nSegments = (int) inputNames.size() - 1;
     }

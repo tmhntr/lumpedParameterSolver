@@ -9,11 +9,11 @@
 #define dialysis_hpp
 
 #include <stdio.h>
-#include "component.hpp"
+#include "component_model.hpp"
 
-class dialysis : public component {
+class dialysis : public component_model {
 public:
-    dialysis(std::vector<std::string> inputNames, std::vector<std::string> derivedNames, std::vector<std::string> outputNames, std::vector<double> parameters) : component("dialysis", inputNames, derivedNames, outputNames, parameters) {  }
+    dialysis(std::vector<std::string> inputNames, std::vector<std::string> derivedNames, std::vector<std::string> outputNames, std::vector<double> parameters) : component_model("dialysis", inputNames, derivedNames, outputNames, parameters) {  }
 
     void updateDerived(double t, double y[]);
     void getDY(double t, double y[], double * DY);

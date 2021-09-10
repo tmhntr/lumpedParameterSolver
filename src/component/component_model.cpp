@@ -10,7 +10,7 @@
 #include <vector>
 #include <type_traits>
 
-component_model::component_model(std::string n, int neq, int np, int nIn, int nDerived) : model(n)
+component_model::component_model(std::string n, int neq, int np, int nIn, int nDerived) : component(n)
 {
     setNEQ(neq);
     _nP = np;
@@ -39,10 +39,10 @@ component_model::component_model(std::string n, std::vector<std::string> inputNa
         setP(i, parameters[i]);
 }
 
-int component_model::init(model * parent)
+int component_model::init(component * parent)
 {
     bool linked;
-    std::vector<model *> modlist = parent->components();
+    std::vector<component *> modlist = parent->components();
     int num_failed = 0;
     for (int i = 0; i < _nInputs; i++)
     {
@@ -58,7 +58,7 @@ int component_model::init(model * parent)
             }
         }
 
-        std::vector<model *>::iterator m = modlist.begin();
+        std::vector<component *>::iterator m = modlist.begin();
         component_model * cmp;
         std::vector<std::string> derivedList;
 
@@ -96,7 +96,7 @@ void component_model::check(int index, int size)
   }
 }
 
-std::vector<model *> component_model::components() { return {this}; }
+std::vector<component *> component_model::components() { return {this}; }
 
 // getters and setters; arrays will have getters and setters for each index as well as the array pointer.
 

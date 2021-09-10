@@ -1,30 +1,30 @@
 //
-//  model.hpp
-//  model
+//  component.hpp
+//  component
 //
 //  Created by Tim  Hunter on 2021-09-08.
 //
 
-#ifndef model_hpp
-#define model_hpp
+#ifndef component_hpp
+#define component_hpp
 
 #include <iostream>
 #include <string>
 #include <vector>
 
-class model {
+class component {
 public:
 
-    model()
+    component()
     {
         _name = "name";
     }
-    model(std::string name) { _name = name; }
+    component(std::string name) { _name = name; }
 
-    virtual ~model() {}
+    virtual ~component() {}
 
-    virtual std::vector<model *> components() = 0;
-    virtual int init(model * parent) = 0;
+    virtual std::vector<component *> components() = 0;
+    virtual int init(component * parent) = 0;
 
     virtual void updateDerived(double t, double y[]) = 0;
     virtual void getDY(double t, double y[], double * DY) = 0;
@@ -73,4 +73,4 @@ private:
     int _nDerived;
 };
 
-#endif /* model_hpp */
+#endif /* component_hpp */
