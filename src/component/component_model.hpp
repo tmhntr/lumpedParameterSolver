@@ -73,7 +73,7 @@ public:
 private:
     int _nP;
     int _nInputs;
-
+    int _nLinks;
     int _neq;
 
     double * P;
@@ -84,8 +84,8 @@ private:
      Names.
      The following are used so set up the model, properly associating submodules to the required shared and input values
      */
-    std::string * inputNames;
-    std::string * derivedNames;
+    std::string * _inputNames;
+    std::string * _derivedNames;
 
     void check(int index, int size);
 };

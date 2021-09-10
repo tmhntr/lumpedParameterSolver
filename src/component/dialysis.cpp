@@ -24,7 +24,7 @@ void dialysis::updateDerived(double t, double *y)
     double c_k_d       = getP(7); // % potassium concentration in dialysate. placeholder. p207 of Ursino 2000.
     double c_cl_d      = getP(8); // % chlorine concentration in dialysate. placeholder. p207 of Ursino 2000.
     double c_hco3_d    = getP(10); // % carbonate concentration in dialysate. placeholder. p207 of Ursino 2000.
-    double respRate  = getP(12); // % respiratory rate; units: (breaths/s)
+    double respRate    = getP(12); // % respiratory rate; units: (breaths/s)
     // %
     // % from ursino 2008
     double c_u_inf     = getP(13); // % , units: mmol/L
@@ -77,29 +77,33 @@ void dialysis::updateDerived(double t, double *y)
     double c_co2_ex              = getP(51); // % c_co2_ex: concentration of CO2 in ex compartment; (in eq 20) Ursino 2000, p209, para 3 on right column.
     double c_p_ic0            = getP(52); // % c_p_ic0: basal protein concentration in intracellular compartment; units mmol/L, Table 1 ursino 2000
 
-    double V_ic = input(0);
-    double V_is = input(1);
+    double M_u_ic = input(0);
+    double M_na_ic = input(1);
+    double M_k_ic = input(2);
+    double M_cl_ic = input(3);
+    double M_hco3_ic = input(4);
+    double M_h_ic = input(5);
+    double M_p_ic = input(6);
 
-    double M_u_ic = input(2);
-    double M_na_ic = input(3);
-    double M_k_ic = input(4);
-    double M_cl_ic = input(5);
-    double M_hco3_ic = input(6);
-    double M_h_ic = input(7);
-    double M_p_ic = input(8);
+    double M_u_ex= input(7);
+    double M_na_ex= input(8);
+    double M_k_ex= input(9);
+    double M_cl_ex= input(10);
+    double M_hco3_ex= input(11);
+    double M_h_ex= input(12);
+    double M_p_ex = input(13);
 
-    double M_u_ex= input(9);
-    double M_na_ex= input(10);
-    double M_k_ex= input(11);
-    double M_cl_ex= input(12);
-    double M_hco3_ex= input(13);
-    double M_h_ex= input(14);
-    double M_p_ex = input(15);
+    double V_ic = input(14);
+    double V_is = input(15);
 
     // % Capillary pressure alues from Lim 2008 p584 paragraph 1
     // % units (mmHg)
-    double pac1     = input(16)        ; double pac2     = input(17)       ;  double pac3      = input(18);
-    double pvc1     = input(16) - input(19); double pvc2     = input(17) - input(20);  double pvc3      = input(18) - input(20);
+    double pac1 = input(getNEQ()+0);
+    double pac2 = input(getNEQ()+1);
+    double pac3 = input(getNEQ()+2);
+    double pvc1 = input(getNEQ()+0) - input(getNEQ()+3);
+    double pvc2 = input(getNEQ()+1) - input(getNEQ()+4);
+    double pvc3 = input(getNEQ()+2) - input(getNEQ()+4);
     // double pac1     = Y[3]        ; double pac2     = Y[5]       ;  double pac3      = Y[6];
     // double pvc1     = Y[3] - Y[13]; double pvc2     = Y[5] - Y[7];  double pvc3      = Y[6] - Y[7];
 
@@ -304,29 +308,31 @@ void dialysis::getDY(double t, double y[], double * DY)
 
     // % in Urisino eq 2, Oic is the intracellular osmotic activity. units: probably mEq/L or mmol/L unless the 0.93 has
     // % Ois is the interstitial osmotic activity.
-    DY[0]     =   k_f*(c_ic - c_is); // % equation 1, appendix 1, Vic, intracellular fluid volume. Ursino 2000 units: L (liters).
-    // is the 1000 conversion F_actor applied consistently throughout the RHS?
-    DY[1]     = - k_f*(c_ic - c_is) + (F_a - R_v); // % eq. 2, appendix 1, Vis. Vis is interstial fluid volume. Ursino 2000. units: L.
 
-
-    // dY[2]     = -(F_a - R_v) - Q_f + Qinfused;     // % eq. 3, appedix 1, Vpl. Vpl is plasma volume. Ursino 2000. unit: L.
-
-    DY[2] = phi_u;                   // % urea            eq 26 Ursino 2000.
-    DY[3] = phi_na;                  // % sodium        eq 26 Ursino 2000.
-    DY[4] = phi_k;                   // % potassium   eq 26 Ursino 2000.
-    DY[5] = phi_cl;                  // % chlorine      eq 11 Ursino 2000.
-    DY[6] = phi_hco3 + R_hco3_ic;      // % bicarbonate eq 11 Ursino 2000.
-    DY[7] = phi_h         + R_h_ic;         // % hydrogen      eq 11 Ursino 2000.
-    DY[8] = phi_p         + R_p_ic;         // % urea            eq 11 Ursino 2000.
+    DY[0] = phi_u;                   // % urea            eq 26 Ursino 2000.
+    DY[1] = phi_na;                  // % sodium        eq 26 Ursino 2000.
+    DY[2] = phi_k;                   // % potassium   eq 26 Ursino 2000.
+    DY[3] = phi_cl;                  // % chlorine      eq 11 Ursino 2000.
+    DY[4] = phi_hco3 + R_hco3_ic;      // % bicarbonate eq 11 Ursino 2000.
+    DY[5] = phi_h         + R_h_ic;         // % hydrogen      eq 11 Ursino 2000.
+    DY[6] = phi_p         + R_p_ic;         // % urea            eq 11 Ursino 2000.
 
     // % for eq 14, Ursino 2000
     // % State variables 28-34 are Extracellular Solute mass
-    DY[9]   = -phi_u     - J_u        + Qinfused*c_u_inf; // % urea eq 14, p207, Ursino 2000. combined with eqn 27, Ursino 2008.
-    DY[10]   = -phi_na    - J_na       + Qinfused*c_na_inf; // % sodium     eq 14, p207, Ursino 2000.combined with eqn 27, Ursino 2008.
-    DY[11]   = -phi_k     - J_k        + Qinfused*c_k_inf; // % potassium  eq 14, p207, Ursino 2000.combined with eqn 27, Ursino 2008.
-    DY[12]   = -phi_cl    - J_cl       + Qinfused*c_cl_inf; // % chlorine     eq 14, p207, Ursino 2000.
-    DY[13]   = -phi_hco3  - J_hco3     + R_hco3_ex; // % bicarbonate eq 14, p207, Ursino 2000.
-    DY[14]   = -phi_h     - J_h        + R_h_ex    ; // % hydrogen eq 14, p207, Ursino 2000.
-    DY[15]   = -phi_p     - J_p        + R_p_ex    ; // % protein eq 14, p207, Ursino 2000.
+    DY[7]   = -phi_u     - J_u        + Qinfused*c_u_inf; // % urea eq 14, p207, Ursino 2000. combined with eqn 27, Ursino 2008.
+    DY[8]   = -phi_na    - J_na       + Qinfused*c_na_inf; // % sodium     eq 14, p207, Ursino 2000.combined with eqn 27, Ursino 2008.
+    DY[9]   = -phi_k     - J_k        + Qinfused*c_k_inf; // % potassium  eq 14, p207, Ursino 2000.combined with eqn 27, Ursino 2008.
+    DY[10]   = -phi_cl    - J_cl       + Qinfused*c_cl_inf; // % chlorine     eq 14, p207, Ursino 2000.
+    DY[11]   = -phi_hco3  - J_hco3     + R_hco3_ex; // % bicarbonate eq 14, p207, Ursino 2000.
+    DY[12]   = -phi_h     - J_h        + R_h_ex    ; // % hydrogen eq 14, p207, Ursino 2000.
+    DY[13]   = -phi_p     - J_p        + R_p_ex    ; // % protein eq 14, p207, Ursino 2000.
+
+    DY[14]     =   k_f*(c_ic - c_is); // % equation 1, appendix 1, Vic, intracellular fluid volume. Ursino 2000 units: L (liters).
+    // is the 1000 conversion F_actor applied consistently throughout the RHS?
+    DY[15]     = - k_f*(c_ic - c_is) + (F_a - R_v); // % eq. 2, appendix 1, Vis. Vis is interstial fluid volume. Ursino 2000. units: L.
+
+    if (nCompartments > 0)
+      DY[16]     = -(F_a - R_v) - Q_f + Qinfused;     // % eq. 3, appedix 1, Vpl. Vpl is plasma volume. Ursino 2000. unit: L.
+
 
 }

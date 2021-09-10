@@ -12,7 +12,9 @@
 
 #include "solver/sdsolver.hpp"
 #include "printer/betterprinter.hpp"
+
 #include "rat.cpp"
+#include "dialyzer.cpp"
 
 #include <string>
 

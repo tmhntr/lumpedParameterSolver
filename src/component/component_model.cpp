@@ -22,15 +22,37 @@ component_model::component_model(std::string n, int neq, int np, int nIn, int nD
     links = (linker **) calloc(_nInputs, sizeof(linker *));
 
     _stateNames.resize(getNEQ());
-    derivedNames = (std::string *) calloc(_nDerived, sizeof(std::string));
+    _derivedNames = (std::string *) calloc(_nDerived, sizeof(std::string));
 
-    inputNames = (std::string *) calloc(_nInputs, sizeof(std::string));
+    _inputNames = (std::string *) calloc(_nInputs, sizeof(std::string));
 }
 
-component_model::component_model(std::string n, std::vector<std::string> inputNames, std::vector<std::string> derivedNames, std::vector<std::string> outputNames, std::vector<double> parameters) : component_model(n, (int) outputNames.size(), (int) parameters.size(), (int) inputNames.size(), (int) derivedNames.size())
+component_model::component_model(std::string n, std::vector<std::string> inputNames, std::vector<std::string> derivedNames, std::vector<std::string> outputNames, std::vector<double> parameters) : component(n)
 {
+
+    setNEQ(outputNames.size());
+    _nP = parameters.size();
+    _nInputs = outputNames.size() + inputNames.size();
+    _nDerived = derivedNames.size();
+
+
+
+    P = (double *) calloc(_nP, sizeof(double));
+    derived = (double *) calloc(_nDerived, sizeof(double));
+    links = (linker **) calloc(_nInputs, sizeof(linker *));
+
+    _stateNames.resize(getNEQ());
+    _derivedNames = (std::string *) calloc(_nDerived, sizeof(std::string));
+
+    _inputNames = (std::string *) calloc(_nInputs, sizeof(std::string));
+
+
+    for (int i = 0; i < outputNames.size(); i++)
+        setInputName(i, outputNames[i]);
     for (int i = 0; i < inputNames.size(); i++)
-        setInputName(i, inputNames[i]);
+        setInputName(getNEQ()+i, inputNames[i]);
+
+
     for (int i = 0; i < derivedNames.size(); i++)
         setDerivedName(i, derivedNames[i]);
     for (int i = 0; i < outputNames.size(); i++)
@@ -191,12 +213,12 @@ std::vector<double> component_model::getDerivedVec()
 void component_model::setInputName(int index, std::string inputName)
 {
     check(index, _nInputs);
-    inputNames[index] = inputName;
+    _inputNames[index] = inputName;
 }
 void component_model::setInputName(std::vector<std::string> Name_vec)
 {
     if (Name_vec.size() == _nInputs)
-        for (int i = 0; i < Name_vec.size(); i++) inputNames[i] = Name_vec[i];
+        for (int i = 0; i < Name_vec.size(); i++) _inputNames[i] = Name_vec[i];
     else
     {
         std::cout << "Input vector is " << Name_vec.size() << ", nInputs is " << _nInputs <<". Wrong size." << std::endl;
@@ -206,22 +228,22 @@ void component_model::setInputName(std::vector<std::string> Name_vec)
 std::string component_model::getInputName(int index)
 {
     check(index, _nInputs);
-    return inputNames[index];
+    return _inputNames[index];
 }
 std::vector<std::string> component_model::getInputNameVec()
 {
-    return std::vector<std::string> (inputNames, inputNames+_nInputs);
+    return std::vector<std::string> (_inputNames, _inputNames+_nInputs);
 }
 
 void component_model::setDerivedName(int index, std::string name)
 {
     check(index, _nDerived);
-    derivedNames[index] = name;
+    _derivedNames[index] = name;
 }
 void component_model::setDerivedName(std::vector<std::string> Name_vec)
 {
     if (Name_vec.size() == _nDerived)
-        for (int i = 0; i < Name_vec.size(); i++) derivedNames[i] = Name_vec[i];
+        for (int i = 0; i < Name_vec.size(); i++) _derivedNames[i] = Name_vec[i];
     else
     {
         std::cout << "Input vector is " << Name_vec.size() << ", nParameters is " << _nDerived <<". Wrong size." << std::endl;
@@ -231,9 +253,9 @@ void component_model::setDerivedName(std::vector<std::string> Name_vec)
 std::string component_model::getDerivedName(int index)
 {
     check(index, _nDerived);
-    return derivedNames[index];
+    return _derivedNames[index];
 }
 std::vector<std::string> component_model::getDerivedNameVec()
 {
-    return std::vector<std::string> (derivedNames, derivedNames+_nDerived);
+    return std::vector<std::string> (_derivedNames, _derivedNames+_nDerived);
 }
