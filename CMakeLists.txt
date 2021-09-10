@@ -30,27 +30,6 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 add_subdirectory(src)
 
 
-add_executable(
-  ${PROJECT_NAME}
-  ${CMAKE_SOURCE_DIR}/src/main.cpp)
-
-target_include_directories(
-  ${PROJECT_NAME}
-  PUBLIC
-    ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/src/model
-    ${CMAKE_SOURCE_DIR}/src/model/zero_rc
-    ${CMAKE_SOURCE_DIR}/src/printer
-    ${CMAKE_SOURCE_DIR}/src/solver
-    ${SUNDIALS_INCLUDE_DIRS})
-
-target_link_libraries(
-  ${PROJECT_NAME}
-  PRIVATE
-    myLib)
-
-
-
 
 # Make some test cases
 
@@ -61,7 +40,7 @@ add_executable(
 target_include_directories(
   test
   PUBLIC
-    ${CMAKE_SOURCE_DIR}/src)
+    ${CMAKE_SOURCE_DIR}/src/)
 
 target_link_libraries(
   test

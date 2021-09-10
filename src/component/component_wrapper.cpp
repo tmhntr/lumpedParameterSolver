@@ -15,9 +15,9 @@ double component_wrapper::getDerived(int index)
   std::vector<component *>::iterator itModel = models.begin();
   try
   {
-    while (index >= (*itModel)->getNEQ())
+    while (index >= (*itModel)->getNDerived())
     {
-      index = index - (*itModel)->getNEQ();
+      index = index - (*itModel)->getNDerived();
       itModel++;
     }
     return (*itModel)->getDerived(index);
@@ -33,9 +33,9 @@ std::string component_wrapper::getDerivedName(int index)
   std::vector<component *>::iterator itModel = models.begin();
   try
   {
-    while (index >= (*itModel)->getNEQ())
+    while (index >= (*itModel)->getNDerived())
     {
-      index = index - (*itModel)->getNEQ();
+      index = index - (*itModel)->getNDerived();
       itModel++;
     }
     return (*itModel)->getDerivedName(index);
@@ -43,8 +43,18 @@ std::string component_wrapper::getDerivedName(int index)
     std::cout << "Something went wrong in component_wrapper::getDerivedName" << std::endl;
     return "";
   }
-
 }
+
+std::vector<std::string> component_wrapper::getDerivedNameVec()
+{
+    std::vector<std::string> namevec;
+    for (int i = 0; i < getNDerived(); i++)
+    {
+        namevec.push_back(getDerivedName(i));
+    }
+    return namevec;
+}
+
 
 void component_wrapper::addModel(component * mdl)
 {
@@ -55,6 +65,7 @@ void component_wrapper::addModel(component * mdl)
     models.push_back(mdl);
     int oldNeq = getNEQ();
     setNEQ(oldNeq + mdl->getNEQ());
+    _nDerived += mdl->getNDerived();
     _stateNames.resize(getNEQ());
     for (int i = 0; i < mdl->getNEQ(); i++)
     {

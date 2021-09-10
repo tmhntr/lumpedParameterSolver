@@ -21,6 +21,7 @@ class component_wrapper: public component
 {
 private:
     std::vector<component *> models;
+    int _nDerived = 0;
 public:
 //    std::vector<std::string> stateNames;
 
@@ -49,6 +50,11 @@ public:
     std::vector<component_model *> flattenModList();
 
     std::vector<component *> components();
+
+    // double getDerived(int index);
+    // // std::vector<double> getDerivedVec();
+    // std::string getDerivedName(int index);
+    // std::vector<std::string> getDerivedNameVec();
 };
 
 

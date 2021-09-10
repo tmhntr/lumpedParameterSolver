@@ -9,7 +9,7 @@
 #define sdsolver_hpp
 
 #include <stdio.h>
-#include "solver.hpp"
+#include <model/solver.hpp>
 
 #include <stdlib.h>
 //#include <json-c/json.h>
@@ -71,7 +71,6 @@ class sdsolver: public solver {
 private:
 //    double * DY;
 //    double * y;
-    double _deltat = 0.01; // bring deltat out of solver // units: s
 
     bool started = false;
 
@@ -94,7 +93,7 @@ public:
     double getY(int index) { return Ith(y,index+1); }
     double getT() { return (double) t;}
 
-    sdsolver(model * m, double INITIAL_CONDITIONS[], double reltol1, double abstol1[]);
+    sdsolver(component * m, double INITIAL_CONDITIONS[], double reltol1, double abstol1[], double * deltat);
 
     static int RHS(realtype t, N_Vector y, N_Vector ydot, void *user_data);
 

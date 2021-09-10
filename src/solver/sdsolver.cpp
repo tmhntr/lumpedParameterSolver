@@ -27,8 +27,9 @@ int sdsolver::check_retval(void *returnvalue, const char *funcname, int opt)
   return(0);
 }
 
-sdsolver::sdsolver(model * m, double INITIAL_CONDITIONS[], double reltol1, double abstol1[]) : solver(m)
+sdsolver::sdsolver(component * m, double INITIAL_CONDITIONS[], double reltol1, double abstol1[], double * deltat) : solver(m)
 {
+    setDeltaT(deltat);
 //        realtype reltol, t, tout;
 //        N_Vector y, abstol;
 //        SUNMatrix A;
@@ -114,8 +115,8 @@ sdsolver::sdsolver(model * m, double INITIAL_CONDITIONS[], double reltol1, doubl
 
 int sdsolver::RHS(realtype t, N_Vector y, N_Vector ydot, void *user_data)
 {
-    model *mdl;
-    mdl = (model *) user_data;
+    component *mdl;
+    mdl = (component *) user_data;
     int NEQ = mdl->getNEQ();
     double DYDT[NEQ];
     double Y[NEQ];

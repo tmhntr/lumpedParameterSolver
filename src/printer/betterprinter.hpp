@@ -8,10 +8,10 @@
 #ifndef betterprinter_h
 #define betterprinter_h
 
-#include "printer/printer.hpp"
-#include "model/model.hpp"
-#include "model/component.hpp"
-#include "solver/solver.hpp"
+#include <model/printer.hpp>
+#include <model/component.hpp>
+#include <component/component_model.hpp>
+#include <model/solver.hpp>
 #include <iomanip>
 #include <vector>
 #include <string>
@@ -20,7 +20,7 @@
 
 class betterprinter: public printer {
     solver * _slvr;
-    model * _model;
+    component * _model;
 
     bool titlesPrinted = false;
     bool _split = true;
@@ -31,7 +31,7 @@ class betterprinter: public printer {
 
     void printStates(component * model);
 
-    std::string fname(model * model, char type);
+    std::string makeFileName(component * model, char type);
 
     void printAlgebraicTitles(component * model);
     void printAlgebraic(component * model);
@@ -42,10 +42,10 @@ class betterprinter: public printer {
 public:
     // Constructors
     betterprinter();
-    betterprinter(void * slvr);
+    betterprinter(solver * slvr);
 
-    void setSolver(void * slvr);
-    void setModel(model * mdl);
+    void setSolver(solver * slvr);
+    void setModel(component * mdl);
     void print();
 
 

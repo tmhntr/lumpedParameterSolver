@@ -7,7 +7,7 @@
 
 #include "vpr_circulation.hpp"
 #include <math.h>
-#include <zero_rc.hpp>
+#include "zero_rc/zero_rc.hpp"
 /*
  adapted from beard et al, 2012
  Annals of Biomedical Engineering, Vol. 40, No. 11, November 2012 (Ó 2012) pp. 2365–2378 DOI: 10.1007/s10439-012-0611-7

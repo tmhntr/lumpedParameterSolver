@@ -11,23 +11,20 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "model/model.hpp"
-#include "printer/printer.hpp"
+#include "component.hpp"
+#include "printer.hpp"
 
 class solver {
-    model * mdl;
-    printer * _printer;
-    double _deltat;
 public:
     solver() {}
-    solver(model * m): solver() { setModel(m); }
+    solver(component * m): solver() { setModel(m); }
     virtual ~solver() {}
 
-    void setModel(model * m) { mdl = m; }
-    model * getModel() { return mdl; }
+    void setModel(component * m) { mdl = m; }
+    component * getModel() { return mdl; }
 
-    void setDeltaT(double deltat) { _deltat = deltat; }
-    double getDeltaT() { return _deltat; }
+    void setDeltaT(double *deltat) { _deltat = deltat; }
+    double getDeltaT() { return *_deltat; }
 
     void setPrinter(printer * p)
     {
@@ -42,7 +39,10 @@ public:
     void print() { _printer->print(); }
 
     virtual void solveStep(double t) = 0;
-
+protected:
+    component * mdl;
+    printer * _printer;
+    double * _deltat;
 };
 
 

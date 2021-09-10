@@ -1,19 +1,16 @@
 #include <iostream>
 // #include "interface.hpp"
-#include "model/RCR.hpp"
-#include "model/heart.hpp"
-#include "model/wrapper.hpp"
-#include "solver/sdsolver.hpp"
-#include "printer/basicprinter.hpp"
-#include "printer/betterprinter.hpp"
-#include "model/myoRC.hpp"
-#include "model/myogenic.hpp"
-#include "model/vpr_circulation.hpp"
+#include <component/RCR.hpp>
+#include <component/heart.hpp>
+#include <component/component_wrapper.hpp>
+#include <component/myoRC.hpp>
+#include <component/myogenic.hpp>
+#include <component/vpr_circulation.hpp>
 #include <string>
 
 using namespace std;
 
-int modeltest(int testnum, model * mdl)
+int componenttest(int testnum, component * mdl)
 {
   if (testnum == 1)
   {
@@ -41,7 +38,7 @@ int modeltest(int testnum, model * mdl)
   return 2;
 }
 
-int comptest(int testnum, component * mdl)
+int modeltest(int testnum, component_model * mdl)
 {
   if (testnum == 1)
   {
@@ -77,7 +74,7 @@ int main(int argc, const char * argv[]) {
     int nCompTests = 4;
 
     // tests will be run on a rat as usual
-    model * rat = new vpr_circulation(
+    component * rat = new vpr_circulation(
       "Rat",
       {"A", "C_ach", "eps_1", "eps_2", "eps_3", "Q_av", "Q_mt", "Q_pv", "Q_tc", "V_ao", "V_lv", "V_pa", "V_pu", "V_rv", "V_vc", "c_nor", "delta_HR_pslow", "delta_HR_s", "Psi", "P_ao", "Tp", "C1", "C2", "C3", "C4", "C5", "C6", "Ts", "delta_HR_ps", "delta_HR_ss", "HR", "e_t", "V_spt", "E_es_spt", "E_es_lvf", "E_es_rvf", "P_lv", "P_pu", "P_rv", "P_pa", "P_vc", "Q_sys", "Q_pul"},
       {"P_ao", "Tp", "C1", "C2", "C3", "C4", "C5", "C6", "Ts", "delta_HR_ps", "delta_HR_ss", "HR", "e_t", "V_spt", "E_es_spt", "E_es_lvf", "E_es_rvf", "P_lv", "P_pu", "P_rv", "P_pa", "P_vc", "Q_sys", "Q_pul"},
@@ -89,16 +86,16 @@ int main(int argc, const char * argv[]) {
     // first test all methods defined iin model
     for (int i = 1; i <= nModelTests; i++)
     {
-        if (modeltest(i, rat) == 0) // tests set y
+        if (componenttest(i, rat) == 0) // tests set y
         {
-            cout << "Model test " << i <<" passed" << endl;
+            cout << "Component test " << i <<" passed" << endl;
         } else {
-            cout << "Model test " << i <<" failed" << endl;
+            cout << "Component test " << i <<" failed" << endl;
             failed++;
         }
     }
 
-    component * rat2 = new vpr_circulation(
+    component_model * rat2 = new vpr_circulation(
       "Rat2",
       {"A", "C_ach", "eps_1", "eps_2", "eps_3", "Q_av", "Q_mt", "Q_pv", "Q_tc", "V_ao", "V_lv", "V_pa", "V_pu", "V_rv", "V_vc", "c_nor", "delta_HR_pslow", "delta_HR_s", "Psi", "P_ao", "Tp", "C1", "C2", "C3", "C4", "C5", "C6", "Ts", "delta_HR_ps", "delta_HR_ss", "HR", "e_t", "V_spt", "E_es_spt", "E_es_lvf", "E_es_rvf", "P_lv", "P_pu", "P_rv", "P_pa", "P_vc", "Q_sys", "Q_pul"},
       {"P_ao", "Tp", "C1", "C2", "C3", "C4", "C5", "C6", "Ts", "delta_HR_ps", "delta_HR_ss", "HR", "e_t", "V_spt", "E_es_spt", "E_es_lvf", "E_es_rvf", "P_lv", "P_pu", "P_rv", "P_pa", "P_vc", "Q_sys", "Q_pul"},
@@ -108,11 +105,11 @@ int main(int argc, const char * argv[]) {
 
       for (int i = 1; i <= nCompTests; i++)
       {
-          if (comptest(i, rat2) == 0) // tests set y
+          if (modeltest(i, rat2) == 0) // tests set y
           {
-              cout << "Component test " << i <<" passed" << endl;
+              cout << "Model test " << i <<" passed" << endl;
           } else {
-              cout << "Component test " << i <<" failed" << endl;
+              cout << "Model test " << i <<" failed" << endl;
               failed++;
           }
       }

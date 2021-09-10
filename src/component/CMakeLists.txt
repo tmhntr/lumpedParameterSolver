@@ -3,6 +3,13 @@
 # ---------------------------------------------------------------
 #
 
+# cmake version to be used
+cmake_minimum_required( VERSION 3.16 )
+
+
+# specify the C++ standard
+set(CMAKE_CXX_STANDARD 11)
+
 install(CODE "MESSAGE(\"\nInstall components\n\")")
 
 # Add variable component_SOURCES with the sources for the component library

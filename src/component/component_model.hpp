@@ -73,7 +73,7 @@ public:
 private:
     int _nP;
     int _nInputs;
-    int _nDerived;
+
     int _neq;
 
     double * P;

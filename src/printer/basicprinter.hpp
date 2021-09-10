@@ -8,21 +8,21 @@
 #ifndef basicprinter_hpp
 #define basicprinter_hpp
 
-#include "printer/printer.hpp"
-#include "model/model.hpp"
-#include "model/component.hpp"
-#include "solver/solver.hpp"
+#include <model/printer.hpp>
+#include <model/component.hpp>
+#include <component/component_model.hpp>
+#include <model/solver.hpp>
 // #include <iomanip>
 
 class basicprinter: public printer {
 public:
     // Constructors
     basicprinter();
-    basicprinter(void * slvr);
+    basicprinter(solver * slvr);
 
     void setPrecision(int precision);
     int getPrecision();
-    void setSolver(void * slvr);
+    void setSolver(solver * slvr);
     void print();
 
 private:
