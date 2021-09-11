@@ -38,7 +38,7 @@ public:
 
     std::string * getStateNames();
 
-    void setY(double * y);
+    void setY(std::vector<double> * y);
 
     void updateDerived(double t, double y[]);
 

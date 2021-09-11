@@ -84,7 +84,7 @@ std::string * component_wrapper::getStateNames()
     return _stateNames.data();
 }
 
-void component_wrapper::setY(double * y)
+void component_wrapper::setY(std::vector<double> * y)
 {
   // std::vector<model *> mdls = getModelVec();
   for (std::vector<component *>::iterator it = models.begin(); it != models.end(); it++)
@@ -135,14 +135,13 @@ int component_wrapper::init(component * parent)
 std::vector<component *> component_wrapper::flattenModList(std::vector<component *> modlist)
 {
     std::vector<component *> newModList;
-    component * wrap;
+    std::vector<component *> newNewModList;
     for (int i = 0; i < modlist.size(); i++)
     {
 
         if (typeid(component_wrapper) == typeid(*(modlist[i])))
         {
-            wrap = (component *) modlist[i];
-            std::vector<component *> newNewModList = flattenModList(wrap->getModelVec());
+            newNewModList = (modlist[i])->components();
             for (int j = 0; j  < newNewModList.size(); j++)
             {
                 newModList.push_back(newNewModList[j]);
