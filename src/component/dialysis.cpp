@@ -265,7 +265,7 @@ void dialysis::updateDerived(double t, double y[])
 
 
     int count = 0;
-    for (double val : {c_ic, c_is, F_a, R_v, phi_u, phi_na, phi_k, phi_cl, phi_hco3, phi_h, phi_p, J_u, J_na, J_k, J_cl, J_hco3, J_h, J_p, R_hco3_ic, R_h_ic, R_p_ic, R_hco3_ex, R_h_ex, R_p_ex})
+    for (double val : {c_ic, c_is, F_a, R_v, phi_u, phi_na, phi_k, phi_cl, phi_hco3, phi_h, phi_p, J_u, J_na, J_k, J_cl, J_hco3, J_h, J_p, R_hco3_ic, R_h_ic, R_p_ic, R_hco3_ex, R_h_ex, R_p_ex, Q_f})
     {
         setDerived(count, val);
         count++;

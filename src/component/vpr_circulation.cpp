@@ -474,7 +474,16 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
 //        DY[13] = (Q_tc-Q_pv);
 
     //V_vc
-    DY[14] = (Q_sys-Q_tc);
+    if (!hasDialysis)
+    {
+        DY[14] = (Q_sys-Q_tc);
+    }
+    else 
+    {
+
+        DY[14] = (Q_sys-Q_tc) -(F_a - R_v) - Q_f;
+    }
+    
 
 //    if (Q_tc<0.0)
 //        DY[14] = Q_sys; //V_vc
