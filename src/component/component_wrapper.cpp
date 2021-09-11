@@ -50,10 +50,15 @@ std::vector<std::string> component_wrapper::getDerivedNameVec()
 
 void component_wrapper::addModel(component * mdl)
 {
-    if(getY() != NULL)
+    try
     {
-      mdl->setY(getY());
+        mdl->setY(getY());
     }
+    catch(const std::exception& e)
+    {
+        std::cerr << "y not set in wrapper" << '\n';
+    }
+    
 
     models.push_back(mdl);
     int oldNeq = getNEQ();
@@ -84,13 +89,14 @@ std::string * component_wrapper::getStateNames()
     return _stateNames.data();
 }
 
-void component_wrapper::setY(std::vector<double> * y)
+void component_wrapper::setY(std::vector<double> y)
 {
-  // std::vector<model *> mdls = getModelVec();
-  for (std::vector<component *>::iterator it = models.begin(); it != models.end(); it++)
-  {
-      (*it)->setY(y);
-  }
+    component::setY(y);
+    std::vector<component *> mdls = components();
+    for (int i = 0; i < mdls.size() ; i++)
+    {
+        mdls[i]->setY(y);
+    }
 }
 
 void component_wrapper::updateDerived(double t, double y[])

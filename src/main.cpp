@@ -37,22 +37,20 @@ int main(int argc, const char * argv[]) {
 //  Assign initial conditions:
 
     // vector<double> y0 = {15.20531, 1.0, 0.2042, 0.232, 0.149, 0, 1.6697, 0.0, 1.2921, 0.5*1.0567, 0.44066, 0.38685, 1.8*5.8495, 0.41389, 1.8*2.3484, 1.249, 0, 0, 0};
-    vector<double> y0 = {100.0, 250.0, 3535.0, 84.0, 10.0, 100.0, 0.0, 55.0, 2130.0, 75.0, 1470.0, 100.0, 100.0, 0.0, 25.0, 11.0, 3.25};
+    // vector<double> y0 = {100.0, 250.0, 3535.0, 84.0, 10.0, 100.0, 0.0, 55.0, 2130.0, 75.0, 1470.0, 100.0, 100.0, 0.0, 25.0, 11.0, 3.25};
 
 
-    // vector<double> y0 = {15.20531, 1.0, 0.2042, 0.232, 0.149, 0, 1.6697, 0.0, 1.2921, 0.5*1.0567, 0.44066, 0.38685, 1.8*5.8495, 0.41389, 1.8*2.3484, 1.249, 0, 0, 0, 100.0, 250.0, 3535.0, 84.0, 10.0, 100.0, 0.0, 55.0, 2130.0, 75.0, 1470.0, 100.0, 100.0, 0.0, 25.0, 11.0, 3.25};
+    vector<double> y0 = {15.20531, 1.0, 0.2042, 0.232, 0.149, 0, 1.6697, 0.0, 1.2921, 0.5*1.0567, 0.44066, 0.38685, 1.8*5.8495, 0.41389, 1.8*2.3484, 1.249, 0, 0, 0, 100.0, 250.0, 3535.0, 84.0, 10.0, 100.0, 0.0, 55.0, 2130.0, 75.0, 1470.0, 100.0, 100.0, 0.0, 25.0, 11.0, 3.25};
 
     component_model * r = (component_model *) rat();
+    component_model * d = (component_model *) dialyzer();
+    component_wrapper * mdl = new component_wrapper({r, d});
     // component * d = dialyzer();
-    // component * mdl = new component_wrapper({r, d});
-    component * mdl = dialyzer();
-    cout << "Working at ln 48" << endl;
-    mdl->init(new component_wrapper({r, mdl}));
-    cout << "Working at ln 51" << endl;
-    std::vector<double> raty = {15.20531, 1.0, 0.2042, 0.232, 0.149, 0, 1.6697, 0.0, 1.2921, 0.5*1.0567, 0.44066, 0.38685, 1.8*5.8495, 0.41389, 1.8*2.3484, 1.249, 0, 0, 0};
-    cout << "Working at ln 53" << endl;
+    mdl->init(mdl);
+    mdl->setY(y0);
+    // std::vector<double> raty = {15.20531, 1.0, 0.2042, 0.232, 0.149, 0, 1.6697, 0.0, 1.2921, 0.5*1.0567, 0.44066, 0.38685, 1.8*5.8495, 0.41389, 1.8*2.3484, 1.249, 0, 0, 0};
+
     cout << r->getDerived(0) << endl;
-    cout << "Working at ln 55" << endl;
 
     cout<< y0.size() - mdl->getNEQ()<< endl;
 
@@ -74,13 +72,18 @@ int main(int argc, const char * argv[]) {
         tstop = atof(argv[1]);
     for (double t = slvr->getDeltaT(); t <= tstop; t+=slvr->getDeltaT())
     {
-        try {
+        try
+        {
             cout << "Solving step to t: " << t << endl;
             slvr->solveStep(t);
-        } catch (...) {
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
             cout<<"Solver failed at timestep " << t << endl;
             return 1;
         }
+        
         slvr->print();
     }
     slvr->print();
