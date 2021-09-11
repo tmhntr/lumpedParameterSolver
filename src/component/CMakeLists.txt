@@ -16,6 +16,7 @@ install(CODE "MESSAGE(\"\nInstall components\n\")")
 set(component_SOURCES
   RCR.cpp
   component_model.cpp
+  component_wrapper.cpp
   heart.cpp
   myoRC.cpp
   myogenic.cpp
@@ -28,6 +29,7 @@ set(component_SOURCES
 set(component_HEADERS
   RCR.hpp
   component_model.hpp
+  component_wrapper.hpp
   heart.hpp
   myoRC.hpp
   myogenic.hpp

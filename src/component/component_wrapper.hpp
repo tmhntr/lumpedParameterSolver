@@ -25,10 +25,11 @@ private:
 public:
 //    std::vector<std::string> stateNames;
 
-    component_wrapper();
-    component_wrapper(std::vector<component *> mdls);
-    std::string getDerivedName(int index);
+    virtual ~component_wrapper() {}
+
     double getDerived(int index);
+    std::string getDerivedName(int index);
+    std::vector<std::string> getDerivedNameVec();
     void addModel(component * mdl);
 
     component * getModel(int index);
@@ -45,16 +46,20 @@ public:
 
     int init(component * parent);
 
-    std::vector<component_model *> flattenModList(std::vector<component *> modlist);
-
-    std::vector<component_model *> flattenModList();
+    std::vector<component *> flattenModList(std::vector<component *> modlist);
+    std::vector<component *> flattenModList();
 
     std::vector<component *> components();
 
-    // double getDerived(int index);
-    // // std::vector<double> getDerivedVec();
-    // std::string getDerivedName(int index);
-    // std::vector<std::string> getDerivedNameVec();
+    component_wrapper() : component("wrapper") {  }
+    component_wrapper(std::vector<component *> mdls) : component_wrapper()
+    {
+        for (std::vector<component *>::iterator it = mdls.begin() ; it != mdls.end(); ++it)
+        {
+            this->addModel(*it);
+        }
+    }
+
 };
 
 

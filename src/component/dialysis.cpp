@@ -23,59 +23,58 @@ void dialysis::updateDerived(double t, double y[])
     double c_na_d      = getP(6); // % sodium concentration in dialysate. placeholder. p207 of Ursino 2000.
     double c_k_d       = getP(7); // % potassium concentration in dialysate. placeholder. p207 of Ursino 2000.
     double c_cl_d      = getP(8); // % chlorine concentration in dialysate. placeholder. p207 of Ursino 2000.
-    double c_hco3_d    = getP(10); // % carbonate concentration in dialysate. placeholder. p207 of Ursino 2000.
-    double respRate    = getP(12); // % respiratory rate; units: (breaths/s)
+    double c_hco3_d    = getP(9); // % carbonate concentration in dialysate. placeholder. p207 of Ursino 2000.
     // %
     // % from ursino 2008
-    double c_u_inf     = getP(13); // % , units: mmol/L
-    double c_na_inf    = getP(14); // % , units: mmol/L
-    double c_k_inf     = getP(15); // % , units: mmol/L
-    double c_cl_inf    = getP(16); // % TEMPORARY this may be a passed parameter
+    double c_u_inf     = getP(10); // % , units: mmol/L
+    double c_na_inf    = getP(11); // % , units: mmol/L
+    double c_k_inf     = getP(12); // % , units: mmol/L
+    double c_cl_inf    = getP(13); // % TEMPORARY this may be a passed parameter
 
     // %%% ALL CONSTANT PARAMETERS ARE LISTED BELOW %%%
     // % Parameters are listed in the order they are called by the ODEs
     // %
     // % Fluid and Solute Kinetics
     // % Table 2, Ursino 2008 (unless stated otherwise).
-    double D_s              = getP(17); // % Na, Cl, K clearance/dialysance. Table 2, Ursino 2008. units: mL/s.
-    double D_u              = getP(18); // % urea clearance/dialysance. Table 2, Ursino 2008. units: mL/s.
-    double D_hco3           = getP(19); // % carbonate clearance/dialysance. Table 1, Ursino 2000. units: L/s.
-    double F_p                  = getP(20); // % F_p: plasma water fraction
-    double F_R                  = getP(21); // % F_R: RBC water fraction
-    double gamma_U          = getP(22); // % gamma_U: fraction of red blood cell water that participates in the transfer through the dialyzer
-    double R_DU                 = getP(23); // % R_DU: Donnan ratio for Urea.
-    double gamma_Na         = getP(24); // % gamma_Na: fraction of red blood cell water that participates in the transfer through the dialyzer
-    double gamma_K          = getP(25); // % gamma_K: fraction of red blood cell water that participates in the transfer through the dialyzer
-    double gamma_Cl         = getP(26); // % gamma_Cl: fraction of red blood cell water that participates in the transfer through the dialyzer
-    double gamma_HCO3   = getP(27); // % gamma_HCO3: fraction of red blood cell water that participates in the transfer through the dialyzer
-    double k_Na                 = getP(28); // % k_Na: mass transfer coefficient for Na; units (ml/s)
-    double beta_Na          = getP(29); // % beta_Na: mass transfer coefficient for Na; units (n/a)
-    double k_K                  = getP(30); // % k_K: mass transfer coefficient for K; units (ml/s)
-    double beta_K               = getP(31); // % beta_K: mass transfer coefficient for K; units (n/a)
-    double k_U                  = getP(32); // % k_U: mass transfer coefficient for U; units (ml/s)
-    double beta_U               = getP(33); // % beta_U: mass transfer coefficient for U; units (n/a)
-    double k_f                  = getP(34); // % k_f: water exchange coefficient; units (L^2 s^-1 mmol^-1)
-    double E_is                 = getP(35); // % E_is: elastance of the interstitial space; units (mmHg/L)
-    double V_isn                = getP(36); // % V_isn: basal volume of interstitial compartments; units (L)
-    double V_pln                = getP(37); // % V_pln: basal volume of blood plasma; units (L)
-    double c_ppln               = getP(38); // % c_ppln: basal protein concentration in plasma; units (g/dl)
-    double c_pisn               = getP(39); // % c_pisn: basal protein concentration in interstitial compartment; units (g/dl)
+    double D_s              = getP(14); // % Na, Cl, K clearance/dialysance. Table 2, Ursino 2008. units: mL/s.
+    double D_u              = getP(15); // % urea clearance/dialysance. Table 2, Ursino 2008. units: mL/s.
+    double D_hco3           = getP(16); // % carbonate clearance/dialysance. Table 1, Ursino 2000. units: L/s.
+    double F_p                  = getP(17); // % F_p: plasma water fraction
+    double F_R                  = getP(18); // % F_R: RBC water fraction
+    double gamma_U          = getP(19); // % gamma_U: fraction of red blood cell water that participates in the transfer through the dialyzer
+    double R_DU                 = getP(20); // % R_DU: Donnan ratio for Urea.
+    double gamma_Na         = getP(21); // % gamma_Na: fraction of red blood cell water that participates in the transfer through the dialyzer
+    double gamma_K          = getP(22); // % gamma_K: fraction of red blood cell water that participates in the transfer through the dialyzer
+    double gamma_Cl         = getP(23); // % gamma_Cl: fraction of red blood cell water that participates in the transfer through the dialyzer
+    double gamma_HCO3   = getP(24); // % gamma_HCO3: fraction of red blood cell water that participates in the transfer through the dialyzer
+    double k_Na                 = getP(25); // % k_Na: mass transfer coefficient for Na; units (ml/s)
+    double beta_Na          = getP(26); // % beta_Na: mass transfer coefficient for Na; units (n/a)
+    double k_K                  = getP(27); // % k_K: mass transfer coefficient for K; units (ml/s)
+    double beta_K               = getP(28); // % beta_K: mass transfer coefficient for K; units (n/a)
+    double k_U                  = getP(29); // % k_U: mass transfer coefficient for U; units (ml/s)
+    double beta_U               = getP(30); // % beta_U: mass transfer coefficient for U; units (n/a)
+    double k_f                  = getP(31); // % k_f: water exchange coefficient; units (L^2 s^-1 mmol^-1)
+    double E_is                 = getP(32); // % E_is: elastance of the interstitial space; units (mmHg/L)
+    double V_isn                = getP(33); // % V_isn: basal volume of interstitial compartments; units (L)
+    double V_pln                = getP(34); // % V_pln: basal volume of blood plasma; units (L)
+    double c_ppln               = getP(35); // % c_ppln: basal protein concentration in plasma; units (g/dl)
+    double c_pisn               = getP(36); // % c_pisn: basal protein concentration in interstitial compartment; units (g/dl)
 
-    double alphaa               = getP(40); // % Gibbs Donnan ratio for anions. Ursino 2000, table 1.
-    double alphac               = getP(41); // % Gibbs Donnan ratio for cations. Ursino 2000, table 1.
+    double alphaa               = getP(37); // % Gibbs Donnan ratio for anions. Ursino 2000, table 1.
+    double alphac               = getP(38); // % Gibbs Donnan ratio for cations. Ursino 2000, table 1.
     // % Table 1 from Ursino 2000 p 205
-    double eta_hco3     = getP(42); // % eta_hco3: bicarbonate mass transfer coefficient. table 1, Ursino 2000. units: L/s.
-    double eta_h        = getP(43); // % eta_h: hydrogen ion mass transfer coefficient. table 1, Ursino 2000. units: L/s.
-    double g_hco3       = getP(44); // % g_hco3: bicarbonate equilibrium ratio. table 1, Ursino 2000. units: dimensionless.
-    double g_h          = getP(45); // % g_h: hydrogen ion equilibrium ratio. table 1, Ursino 2000. units: dimensionless.
+    double eta_hco3     = getP(39); // % eta_hco3: bicarbonate mass transfer coefficient. table 1, Ursino 2000. units: L/s.
+    double eta_h        = getP(40); // % eta_h: hydrogen ion mass transfer coefficient. table 1, Ursino 2000. units: L/s.
+    double g_hco3       = getP(41); // % g_hco3: bicarbonate equilibrium ratio. table 1, Ursino 2000. units: dimensionless.
+    double g_h          = getP(42); // % g_h: hydrogen ion equilibrium ratio. table 1, Ursino 2000. units: dimensionless.
     // % TEMPORARY insert references
-    double etaprime_r          = getP(46); // % etaprime_r: reaction velocity, hco3 buffer. table 1, Ursino 2000. see reaction i. units: L^2/s/mmol
-    double kprime_a          = getP(47); // % kprime_a: dissociation constant; p209 of Ursino 2000, right column 3rd para.
-    double etaprimeprime_r  = getP(48); // % etaprimeprime_r: reaction velocity, protein buffer. table 1, Ursino 2000. see reaction ii. units: L^2/s/mmol
-    double kprimeprime_a      = getP(49); // % kprimeprime_a:dissociation constant; p209 of Ursino 2000, right column 3rd para.
-    double c_co2_ic              = getP(50); // % c_co2_ic: concentration of CO2 in ic compartment; (in eq 20) Ursino 2000, p209, para 3 on right column.
-    double c_co2_ex              = getP(51); // % c_co2_ex: concentration of CO2 in ex compartment; (in eq 20) Ursino 2000, p209, para 3 on right column.
-    double c_p_ic0            = getP(52); // % c_p_ic0: basal protein concentration in intracellular compartment; units mmol/L, Table 1 ursino 2000
+    double etaprime_r          = getP(43); // % etaprime_r: reaction velocity, hco3 buffer. table 1, Ursino 2000. see reaction i. units: L^2/s/mmol
+    double kprime_a          = getP(44); // % kprime_a: dissociation constant; p209 of Ursino 2000, right column 3rd para.
+    double etaprimeprime_r  = getP(45); // % etaprimeprime_r: reaction velocity, protein buffer. table 1, Ursino 2000. see reaction ii. units: L^2/s/mmol
+    double kprimeprime_a      = getP(46); // % kprimeprime_a:dissociation constant; p209 of Ursino 2000, right column 3rd para.
+    double c_co2_ic              = getP(47); // % c_co2_ic: concentration of CO2 in ic compartment; (in eq 20) Ursino 2000, p209, para 3 on right column.
+    double c_co2_ex              = getP(48); // % c_co2_ex: concentration of CO2 in ex compartment; (in eq 20) Ursino 2000, p209, para 3 on right column.
+    double c_p_ic0            = getP(49); // % c_p_ic0: basal protein concentration in intracellular compartment; units mmol/L, Table 1 ursino 2000
 
     double M_u_ic = input(0);
     double M_na_ic = input(1);
@@ -124,9 +123,9 @@ void dialysis::updateDerived(double t, double y[])
 
 
 
-    double pis0         = getP(53); // % pis0: basal pressure in is compartment; units: mmHg; eq. 10, appendix 1. Ursino 2000. table 1.
-    double La           = getP(54); // % La: arterial capillary permeability; units: mL/mmHg/s; table 1. Ursino 2008.
-    double Lv           = getP(55); // % Lv: venous capillary permeability; units: mL/mmHg/s; table 1. Ursino 2008, table 1.
+    double pis0         = getP(50); // % pis0: basal pressure in is compartment; units: mmHg; eq. 10, appendix 1. Ursino 2000. table 1.
+    double La           = getP(51); // % La: arterial capillary permeability; units: mL/mmHg/s; table 1. Ursino 2008.
+    double Lv           = getP(52); // % Lv: venous capillary permeability; units: mL/mmHg/s; table 1. Ursino 2008, table 1.
     // %
     // JJ TH NOV 3
     // double sigma_lv                     = data->p_ursino[94 + 19]; // % units: mmHg/ml
@@ -296,7 +295,7 @@ void dialysis::getDY(double t, double y[], double * DY)
     double R_h_ex = getDerived(22);
     double R_p_ex = getDerived(23);
 
-    
+
     double Q_f        = getP(2);     // % Ultrafiltration rate. units:mL/s
     double Qinfused = getP(3);
     double c_u_inf = getP(5);

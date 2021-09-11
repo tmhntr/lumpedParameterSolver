@@ -1,13 +1,5 @@
 #include "component_wrapper.hpp"
 
-component_wrapper::component_wrapper() : component("wrapper") {}
-component_wrapper::component_wrapper(std::vector<component *> mdls) : component_wrapper()
-{
-    for (std::vector<component *>::iterator it = mdls.begin() ; it != mdls.end(); ++it)
-    {
-        addModel(*it);
-    }
-}
 
 double component_wrapper::getDerived(int index)
 {
@@ -58,10 +50,11 @@ std::vector<std::string> component_wrapper::getDerivedNameVec()
 
 void component_wrapper::addModel(component * mdl)
 {
-    if(getY()!=NULL)
+    if(getY() != NULL)
     {
       mdl->setY(getY());
     }
+
     models.push_back(mdl);
     int oldNeq = getNEQ();
     setNEQ(oldNeq + mdl->getNEQ());
@@ -139,37 +132,40 @@ int component_wrapper::init(component * parent)
     return retval;
 }
 
-std::vector<component_model *> component_wrapper::flattenModList(std::vector<component *> modlist)
+std::vector<component *> component_wrapper::flattenModList(std::vector<component *> modlist)
 {
-    std::vector<component_model *> newModList;
-    component_wrapper * wrap;
+    std::vector<component *> newModList;
+    component * wrap;
     for (int i = 0; i < modlist.size(); i++)
     {
 
         if (typeid(component_wrapper) == typeid(*(modlist[i])))
         {
-            wrap = (component_wrapper *) modlist[i];
-            std::vector<component_model *> newNewModList = flattenModList(wrap->getModelVec());
+            wrap = (component *) modlist[i];
+            std::vector<component *> newNewModList = flattenModList(wrap->getModelVec());
             for (int j = 0; j  < newNewModList.size(); j++)
             {
                 newModList.push_back(newNewModList[j]);
             }
         } else
         {
-            newModList.push_back((component_model *) modlist[i]);
+            newModList.push_back((component *) modlist[i]);
         }
     }
     return newModList;
 }
 
-std::vector<component_model *> component_wrapper::flattenModList() {return flattenModList(models); }
+std::vector<component *> component_wrapper::flattenModList()
+{
+    return flattenModList(models);
+}
 
 std::vector<component *> component_wrapper::components()
 {
     std::vector<component *> mlist;
-    std::vector<component_model *> clist = flattenModList(models);
+    std::vector<component *> clist = flattenModList(models);
     for (int i = 0; i < clist.size(); i++) {
-        mlist.push_back((component *) clist[i]);
+        mlist.push_back(clist[i]);
     }
     return mlist;
 }
