@@ -10,14 +10,20 @@
 
 #include <stdio.h>
 #include "component_model.hpp"
+#include <vector>
+
 
 class dialysis : public component_model {
 public:
 
-    dialysis(std::string name, std::vector<std::string> inputNames, std::vector<std::string> algebraicNames, std::vector<std::string> outputNames, std::vector<double> parameters) : component_model(name, inputNames, algebraicNames, outputNames, parameters)
-    {
+    dialysis(
+        std::string name,
+        std::vector<std::string> inputNames,
+        std::vector<std::string> algebraicNames,
+        std::vector<std::string> outputNames,
+        std::vector<double> parameters
+    ) : component_model(name, inputNames, algebraicNames, outputNames, parameters) {  };
 
-    }
 
     void updateDerived(double t, double y[]);
     void getDY(double t, double y[], double * DY);

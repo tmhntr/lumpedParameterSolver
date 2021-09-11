@@ -9,7 +9,7 @@
 
 
 
-void dialysis::updateDerived(double t, double *y)
+void dialysis::updateDerived(double t, double y[])
 {
     double M_eqic    = getP(0);
     double M_eqex    = getP(1);
@@ -296,6 +296,8 @@ void dialysis::getDY(double t, double y[], double * DY)
     double R_h_ex = getDerived(22);
     double R_p_ex = getDerived(23);
 
+    
+    double Q_f        = getP(2);     // % Ultrafiltration rate. units:mL/s
     double Qinfused = getP(3);
     double c_u_inf = getP(5);
     double c_na_inf = getP(6);

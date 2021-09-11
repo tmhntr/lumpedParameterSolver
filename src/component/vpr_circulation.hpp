@@ -26,8 +26,6 @@
  */
 
 class vpr_circulation: public component_model {
-private:
-    bool hasDialysis = false;
 public:
     vpr_circulation(std::string name, std::vector<std::string> inputNames, std::vector<std::string> algebraicNames, std::vector<std::string> outputNames, std::vector<double> parameters) : component_model(name, inputNames, algebraicNames, outputNames, parameters)
     {
@@ -37,6 +35,9 @@ public:
     void getDY(double t, double y[], double * DY);
 
     void setHasDialysis(bool value) { hasDialysis = value; }
+    
+private:
+    bool hasDialysis = false;
 };
 
 #endif /* ratHeart_hpp */

@@ -5,7 +5,7 @@
 
 component * dialyzer()
 {
-    component * d = new dialysis(
+    dialysis * d = new dialysis(
       "dialysis",
       {"P_ao", "P_ao", "P_ao", "P_vc", "P_vc"},
       {"c_ic", "c_is", "F_a", "R_v", "phi_u", "phi_na", "phi_k", "phi_cl", "phi_hco3", "phi_h", "phi_p", "J_u", "J_na", "J_k", "J_cl", "J_hco3", "J_h", "J_p", "R_hco3_ic", "R_h_ic", "R_p_ic", "R_hco3_ex", "R_h_ex", "R_p_ex"},

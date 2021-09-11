@@ -20,6 +20,7 @@ set(component_SOURCES
   myoRC.cpp
   myogenic.cpp
   vpr_circulation.cpp
+  dialysis.cpp
   zero_rc/zero_rc.cpp
   )
 
@@ -31,6 +32,7 @@ set(component_HEADERS
   myoRC.hpp
   myogenic.hpp
   vpr_circulation.hpp
+  dialysis.hpp
   zero_rc/zero_rc.hpp
   )
 
