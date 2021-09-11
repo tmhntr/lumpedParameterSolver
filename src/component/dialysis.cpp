@@ -107,10 +107,18 @@ void dialysis::updateDerived(double t, double y[])
     // double pvc1     = Y[3] - Y[13]; double pvc2     = Y[5] - Y[7];  double pvc3      = Y[6] - Y[7];
 
     double V_b = 0.0; // whole blood volume
-    for (int i = 0; i < nCompartments; i++)
+    if (nCompartments > 0)
     {
-      V_b += input(21+i);
+      for (int i = 0; i < nCompartments; i++)
+      {
+        V_b += input(getNEQ()+5+i);
+      }
     }
+    else
+    {
+      V_b = input(16);
+    }
+
 
     double V_rc     = 1.3;          // % red blood cell volume, units (L) ursino + innocenti 2008
     double V_pl        = V_b - V_rc;  // %  blood plasma volume

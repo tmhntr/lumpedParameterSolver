@@ -14,12 +14,12 @@ int componenttest(int testnum, component * mdl)
 {
   if (testnum == 1)
   {
-      double Y_1[] = {1.0, 2.0, 3.0};
-      mdl->setY(Y_1);
+      std::vector<double> Y_1 = {1.0, 2.0, 3.0};
+      mdl->setY(&Y_1);
 
-      double * Y_2 = mdl->getY();
+      std::vector<double> * Y_2 = mdl->getY();
 
-      if (Y_2[1] == Y_1[1])
+      if ((*Y_2)[1] == Y_1[1])
         return 0;
       else
         return 1;
@@ -57,8 +57,8 @@ int modeltest(int testnum, component_model * mdl)
       else
         return 1;
   } else if(testnum == 4) {
-      double y[] = {15.20531, 1.0, 0.2042, 0.232, 0.149, 0, 1.6697, 0.0, 1.2921, 0.5*1.0567, 0.44066, 0.38685, 1.8*5.8495, 0.41389, 1.8*2.3484, 1.249, 0, 0, 0};
-      mdl->setY(y);
+      std::vector<double> y = {15.20531, 1.0, 0.2042, 0.232, 0.149, 0, 1.6697, 0.0, 1.2921, 0.5*1.0567, 0.44066, 0.38685, 1.8*5.8495, 0.41389, 1.8*2.3484, 1.249, 0, 0, 0};
+      mdl->setY(&y);
       if (y[0] == mdl->input(0))
           return 0;
       else

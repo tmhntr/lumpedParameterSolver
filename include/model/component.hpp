@@ -33,9 +33,10 @@ public:
     virtual std::string getDerivedName(int index) = 0;
     virtual std::vector<std::string> getDerivedNameVec() = 0;
 
-    void setY(double * y) { _y = y; }
-    double * getY() { return _y; }
-    double getY(int index) { return _y[index]; }
+    void setY(std::vector<double> * y) { _y = y; }
+    void setY(int index, double value) { (*_y)[index] = value; }
+    std::vector<double> * getY() { return _y; }
+    double getY(int index) { return (*_y)[index]; }
 
     void setName(std::string name) { _name = name; }
     std::string getName() { return _name; }
@@ -72,7 +73,7 @@ protected:
 private:
     int _neq = 0;
     std::string _name;
-    double * _y;
+    std::vector<double> * _y;
 };
 
 #endif /* component_hpp */
