@@ -478,12 +478,14 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
     {
         DY[14] = (Q_sys-Q_tc);
     }
-    else 
+    else
     {
-
+      double F_a = input(getNEQ()+0);
+      double R_v = input(getNEQ()+1);
+      double Q_f = input(getNEQ()+2);
         DY[14] = (Q_sys-Q_tc) -(F_a - R_v) - Q_f;
     }
-    
+
 
 //    if (Q_tc<0.0)
 //        DY[14] = Q_sys; //V_vc
