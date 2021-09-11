@@ -103,6 +103,7 @@ public:
     }
     double get()
     {
+        // std::cout << "getting" << _index << std::endl;
         return _source->getY(_index);
     }
 };

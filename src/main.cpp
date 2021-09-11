@@ -47,12 +47,11 @@ int main(int argc, const char * argv[]) {
     // component * mdl = new component_wrapper({r, d});
     component * mdl = dialyzer();
     cout << "Working at ln 48" << endl;
-    mdl->init(mdl);
-
+    mdl->init(new component_wrapper({r, mdl}));
+    cout << "Working at ln 51" << endl;
     std::vector<double> raty = {15.20531, 1.0, 0.2042, 0.232, 0.149, 0, 1.6697, 0.0, 1.2921, 0.5*1.0567, 0.44066, 0.38685, 1.8*5.8495, 0.41389, 1.8*2.3484, 1.249, 0, 0, 0};
-    r->setY(&raty);
     cout << "Working at ln 53" << endl;
-    cout << r->input(0) << endl;
+    cout << r->getDerived(0) << endl;
     cout << "Working at ln 55" << endl;
 
     cout<< y0.size() - mdl->getNEQ()<< endl;
