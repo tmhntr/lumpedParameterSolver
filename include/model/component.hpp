@@ -34,7 +34,7 @@ public:
     virtual std::vector<std::string> getDerivedNameVec() = 0;
 
     void setY(std::vector<double> y) { _y = std::vector<double>(y); }
-    void setY(int index, double value) { _y[index] = value; }
+    virtual void setY(int index, double value) { _y[index] = value; }
     std::vector<double> getY() { return _y; }
     double getY(int index) { return _y.at(index); }
 

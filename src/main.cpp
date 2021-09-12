@@ -26,7 +26,7 @@ using namespace std;
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    double deltat = 0.01;
+    double deltat = 0.001;
 
     double reltol = 1e-8;
 //    double abstol[] = {1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4, 1e-4};

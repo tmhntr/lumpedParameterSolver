@@ -118,10 +118,13 @@ int sdsolver::RHS(realtype t, N_Vector y, N_Vector ydot, void *user_data)
     component *mdl;
     mdl = (component *) user_data;
     int NEQ = mdl->getNEQ();
-    double DYDT[NEQ];
+    double * DYDT = (double *) calloc(NEQ, __SIZEOF_DOUBLE__);
     double Y[NEQ];
 
-    for(int i=0;i<NEQ;i++) mdl->setY(i, Ith(y,i+1));
+    for(int i=0;i<NEQ;i++) 
+    {
+        mdl->setY(i, Ith(y,i+1));
+    }
 
     mdl->updateDerived(t, Y);
 
@@ -130,6 +133,8 @@ int sdsolver::RHS(realtype t, N_Vector y, N_Vector ydot, void *user_data)
     for(int i=0;i<NEQ;i++) Ith(ydot,i+1) = DYDT[i];
 
     return(0);
+
+    free(DYDT);
 
 }
 

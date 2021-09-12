@@ -99,6 +99,16 @@ void component_wrapper::setY(std::vector<double> y)
     }
 }
 
+void component_wrapper::setY(int index, double value)
+{
+    component::setY(index, value);
+    std::vector<component *> mdls = components();
+    for (int i = 0; i < mdls.size() ; i++)
+    {
+        mdls[i]->setY(index, value);;
+    }
+}
+
 void component_wrapper::updateDerived(double t, double y[])
 {
     for (int i = 0; i <  models.size(); i++)
@@ -109,14 +119,11 @@ void component_wrapper::updateDerived(double t, double y[])
 
 void component_wrapper::getDY(double t, double y[], double * DY)
 {
-    component * mdlPtr;
-    double * DYPtr = DY;
-    for (std::vector<component *>::iterator it = models.begin() ; it != models.end(); ++it)
+    int dyptr = 0;
+    for (component * mdl : components())
     {
-        mdlPtr = *it;
-//            std::cout << mdlPtr->getName() << std::endl;
-        mdlPtr->getDY(t, y, DYPtr);
-        DYPtr+=mdlPtr->getNEQ();
+        mdl->getDY(t, y, DY+dyptr);
+        dyptr+=mdl->getNEQ();
     }
 }
 
