@@ -7,7 +7,7 @@
 
 #include "vpr_circulation.hpp"
 #include <math.h>
-#include <zero_rc.hpp>
+#include "zero_rc/zero_rc.hpp"
 /*
  adapted from beard et al, 2012
  Annals of Biomedical Engineering, Vol. 40, No. 11, November 2012 (Ó 2012) pp. 2365–2378 DOI: 10.1007/s10439-012-0611-7
@@ -298,17 +298,17 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
     double P_ao, Tp; // vessel wall mechanics
     double C1, C2, C3, C4, C5, C6; // vessel wall mechanics
     double Ts, delta_HR_ps, delta_HR_ss; // br integration
-    P_ao = input(19+0);
-    Tp = input(19+1);
-    C1 = input(19+2);
-    C2 = input(19+3);
-    C3 = input(19+4);
-    C4 = input(19+5);
-    C5 = input(19+6);
-    C6 = input(19+7);
-    Ts = input(19+8);
-    delta_HR_ps = input(19+9);
-    delta_HR_ss = input(19+10);
+    P_ao = getDerived(0);
+    Tp = getDerived(1);
+    C1 = getDerived(2);
+    C2 = getDerived(3);
+    C3 = getDerived(4);
+    C4 = getDerived(5);
+    C5 = getDerived(6);
+    C6 = getDerived(7);
+    Ts = getDerived(8);
+    delta_HR_ps = getDerived(9);
+    delta_HR_ss = getDerived(10);
 
 
     // heart mechanics
@@ -333,12 +333,12 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
 
     // Derived algebraic vavlues
     double HR, e_t, V_spt, E_es_spt, E_es_lvf, E_es_rvf;
-    HR = input(19+11);
-    e_t = input(19+12);
-    V_spt = input(19+13);
-    E_es_spt = input(19+14);
-    E_es_lvf = input(19+15);
-    E_es_rvf = input(19+16);
+    HR = getDerived(11);
+    e_t = getDerived(12);
+    V_spt = getDerived(13);
+    E_es_spt = getDerived(14);
+    E_es_lvf = getDerived(15);
+    E_es_rvf = getDerived(16);
 
 
     // flow mechanics
@@ -365,13 +365,13 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
 
     // Derived algebraic vavlues
     double P_lv, P_pu, P_rv, P_pa, P_vc, Q_sys, Q_pul;
-    P_lv = input(19+17);
-    P_pu = input(19+18);
-    P_rv = input(19+19);
-    P_pa = input(19+20);
-    P_vc = input(19+21);
-    Q_sys = input(19+22);
-    Q_pul = input(19+23);
+    P_lv = getDerived(17);
+    P_pu = getDerived(18);
+    P_rv = getDerived(19);
+    P_pa = getDerived(20);
+    P_vc = getDerived(21);
+    Q_sys = getDerived(22);
+    Q_pul = getDerived(23);
 
 
 // Pressures, flows, resistances and inertances
@@ -474,7 +474,18 @@ void vpr_circulation::getDY(double t, double y[], double * DY)
 //        DY[13] = (Q_tc-Q_pv);
 
     //V_vc
-    DY[14] = (Q_sys-Q_tc);
+    if (!hasDialysis)
+    {
+        DY[14] = (Q_sys-Q_tc);
+    }
+    else
+    {
+      double F_a = input(getNEQ()+0);
+      double R_v = input(getNEQ()+1);
+      double Q_f = input(getNEQ()+2);
+        DY[14] = (Q_sys-Q_tc) -(F_a - R_v) - Q_f;
+    }
+
 
 //    if (Q_tc<0.0)
 //        DY[14] = Q_sys; //V_vc

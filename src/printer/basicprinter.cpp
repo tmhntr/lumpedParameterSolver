@@ -10,7 +10,7 @@
 
 // public:
 basicprinter::basicprinter() : printer() {  }
-basicprinter::basicprinter(void * slvr) : printer() { setSolver(slvr); }
+basicprinter::basicprinter(solver * slvr) : printer() { setSolver((void *) slvr); }
 
 void basicprinter::setPrecision(int precision) { _precision = precision; }
 int basicprinter::getPrecision() { return _precision; }

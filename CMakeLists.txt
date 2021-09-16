@@ -1,3 +1,9 @@
+# ---------------------------------------------------------------
+# Programmer(s): Timothy J. Hunter @ UWO
+# ---------------------------------------------------------------
+#
+
+
 # cmake version to be used
 cmake_minimum_required( VERSION 3.16 )
 
@@ -5,15 +11,29 @@ cmake_minimum_required( VERSION 3.16 )
 set(CMAKE_CXX_STANDARD 11)
 
 # project name
-project(rat)
+project(
+  model
+  VERSION 1.0.0
+  LANGUAGES CXX)
 
-file(GLOB SOURCES "src/*.cpp")
-
-add_executable(
-  ${PROJECT_NAME}
-  ${SOURCES})
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
+
+# Prohibit in-source build
+if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
+  print_error("In-source build prohibited.")
+endif()
+
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
+
+# Add selected packages and modules to the build
+add_subdirectory(src)
+
+
+#make rat
+add_executable(
+  rat
+  ${CMAKE_SOURCE_DIR}/src/main.cpp)
 
 find_package(
   SUNDIALS
@@ -23,23 +43,32 @@ find_package(
   sundials_nvecserial)
 
 target_include_directories(
-  ${PROJECT_NAME}
-  PRIVATE
-    lib/zero_rc
-    )
-
-
-
-# message(WARNING ${SUNDIALS_INCLUDE_DIRS})
-
-add_library(
-  zero_rc
-  lib/zero_rc/zero_rc.cpp)
-
+  rat
+  PUBLIC
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${SUNDIALS_INCLUDE_DIRS})
 
 target_link_libraries(
-  ${PROJECT_NAME}
+  rat
   PRIVATE
-    zero_rc
-    SUNDIALS::sundials_cvode
-    SUNDIALS::sundials_nvecserial)
+    component
+    printer
+    solver)
+
+# Make some test cases
+
+add_executable(
+  test
+  ${CMAKE_SOURCE_DIR}/test/model/test_main.cpp)
+
+target_include_directories(
+  test
+  PUBLIC
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include)
+
+target_link_libraries(
+  test
+  PRIVATE
+    component)
