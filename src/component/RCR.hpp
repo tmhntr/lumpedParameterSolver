@@ -8,10 +8,10 @@
 #ifndef RCR_hpp
 #define RCR_hpp
 
-#include <stdio.h>
 #include "component_model.hpp"
-#include <math.h>
 #include <map>
+#include <math.h>
+#include <stdio.h>
 #include <vector>
 
 /*
@@ -25,16 +25,19 @@
  - Algebraic values are flows from upstream compartments to this compartment
  */
 
-class RCR: public component_model {
+class RCR : public component_model {
 private:
     bool hasValve = false;
     int nInlets = 1;
     int nOutlets = 1;
-//    int nInputs = 2;
-//    int nAlgebraic = 1;
-//    int nP = 2;
+    //    int nInputs = 2;
+    //    int nAlgebraic = 1;
+    //    int nP = 2;
 public:
-    RCR(std::string name, std::vector<std::string> inputNames, std::vector<std::string> algebraicNames, std::vector<std::string> outputNames, std::vector<double> parameters) : component_model(name, inputNames, algebraicNames, outputNames, parameters) {    }
+    RCR(std::string name, std::vector<std::string> inputNames, std::vector<std::string> algebraicNames, std::vector<std::string> outputNames, std::vector<double> parameters)
+        : component_model(name, inputNames, algebraicNames, outputNames, parameters)
+    {
+    }
 
     void setNInlets(int value) { nInlets = value; }
     int getNInlets() { return nInlets; }
@@ -43,7 +46,7 @@ public:
     int getNOutlets() { return nOutlets; }
 
     void updateDerived(double t, double y[]);
-    void getDY(double t, double y[], double * DY);
+    void getDY(double t, double y[], double* DY);
     void setHasValve(bool value) { hasValve = value; }
 };
 

@@ -8,25 +8,25 @@
 #ifndef basicprinter_hpp
 #define basicprinter_hpp
 
-#include <model/printer.hpp>
-#include <model/component.hpp>
 #include <component/component_model.hpp>
+#include <model/component.hpp>
+#include <model/printer.hpp>
 #include <model/solver.hpp>
 // #include <iomanip>
 
-class basicprinter: public printer {
+class basicprinter : public printer {
 public:
     // Constructors
     basicprinter();
-    basicprinter(solver * slvr);
+    basicprinter(solver* slvr);
 
     void setPrecision(int precision);
     int getPrecision();
-    void setSolver(void * slvr);
+    void setSolver(void* slvr);
     void print();
 
 private:
-    solver * _slvr;
+    solver* _slvr;
     bool titlesPrinted = false;
     int _precision = 2;
 

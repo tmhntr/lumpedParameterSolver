@@ -8,10 +8,10 @@
 #ifndef ratHeart_hpp
 #define ratHeart_hpp
 
-#include <stdio.h>
 #include "component_model.hpp"
-#include <math.h>
 #include <map>
+#include <math.h>
+#include <stdio.h>
 #include <vector>
 
 /*
@@ -25,17 +25,17 @@
  - Algebraic values are flows from upstream compartments to this compartment
  */
 
-class vpr_circulation: public component_model {
+class vpr_circulation : public component_model {
 public:
-    vpr_circulation(std::string name, std::vector<std::string> inputNames, std::vector<std::string> algebraicNames, std::vector<std::string> outputNames, std::vector<double> parameters) : component_model(name, inputNames, algebraicNames, outputNames, parameters)
+    vpr_circulation(std::string name, std::vector<std::string> inputNames, std::vector<std::string> algebraicNames, std::vector<std::string> outputNames, std::vector<double> parameters)
+        : component_model(name, inputNames, algebraicNames, outputNames, parameters)
     {
-
     }
     void updateDerived(double t, double y[]);
-    void getDY(double t, double y[], double * DY);
+    void getDY(double t, double y[], double* DY);
 
     void setHasDialysis(bool value) { hasDialysis = value; }
-    
+
 private:
     bool hasDialysis = false;
 };

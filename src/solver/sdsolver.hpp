@@ -8,18 +8,18 @@
 #ifndef sdsolver_hpp
 #define sdsolver_hpp
 
-#include <stdio.h>
 #include <model/solver.hpp>
+#include <stdio.h>
 
 #include <stdlib.h>
 //#include <json-c/json.h>
-#include <string.h>
 #include <math.h>
+#include <string.h>
 // #include <malloc.h>
-#include <time.h>
-#include <cvode/cvode.h>               /* prototypes for CVODE fcts., consts.  */
-#include <nvector/nvector_serial.h>    /* access to serial N_Vector            */
+#include <cvode/cvode.h> /* prototypes for CVODE fcts., consts.  */
+#include <nvector/nvector_serial.h> /* access to serial N_Vector            */
 #include <sunmatrix/sunmatrix_dense.h> /* access to dense SUNMatrix            */
+#include <time.h>
 // #include <sunmatrix/sunmatrix_sparse.h>
 #include <sunlinsol/sunlinsol_dense.h> /* access to dense SUNLinearSolver      */
 // #include <sunlinsol/sunlinsol_klu.h>
@@ -46,31 +46,30 @@
    SM_ELEMENT_D macro in dense.h. SM_ELEMENT_D numbers rows and columns of
    a dense matrix starting from 0. */
 
-#define Ith(v,i)    NV_Ith_S(v,i-1)         /* Ith numbers components 1..NEQ */
-#define IJth(A,i,j) SM_ELEMENT_D(A,i-1,j-1) /* IJth numbers rows,cols 1..NEQ */
-
+#define Ith(v, i) NV_Ith_S(v, i - 1) /* Ith numbers components 1..NEQ */
+#define IJth(A, i, j) SM_ELEMENT_D(A, i - 1, j - 1) /* IJth numbers rows,cols 1..NEQ */
 
 /* Problem Constants */
 
 // #define NEQ   3                /* number of equations  */
-#define Y1    RCONST(1.0)      /* initial y components */
-#define Y2    RCONST(0.0)
-#define Y3    RCONST(0.0)
+#define Y1 RCONST(1.0) /* initial y components */
+#define Y2 RCONST(0.0)
+#define Y3 RCONST(0.0)
 // #define RTOL  RCONST(1.0e-4)   /* scalar relative tolerance            */
 // #define ATOL1 RCONST(1.0e-8)   /* vector absolute tolerance components */
 // #define ATOL2 RCONST(1.0e-14)
 // #define ATOL3 RCONST(1.0e-6)
-#define T0    RCONST(0.0)      /* initial time           */
-#define T1    RCONST(0.4)      /* first output time      */
-#define TMULT RCONST(1.0)     /* output time factor     */
-#define NOUT  20               /* number of output times */
+#define T0 RCONST(0.0) /* initial time           */
+#define T1 RCONST(0.4) /* first output time      */
+#define TMULT RCONST(1.0) /* output time factor     */
+#define NOUT 20 /* number of output times */
 
-#define ZERO  RCONST(0.0)
+#define ZERO RCONST(0.0)
 
-class sdsolver: public solver {
+class sdsolver : public solver {
 private:
-//    double * DY;
-//    double * y;
+    //    double * DY;
+    //    double * y;
 
     bool started = false;
 
@@ -78,27 +77,27 @@ private:
     N_Vector y, abstol;
     SUNMatrix A;
     SUNLinearSolver LS;
-    void *cvode_mem;
+    void* cvode_mem;
     int retval, retvalr, iout;
     int rootsfound[2];
 
-    static int check_retval(void *returnvalue, const char *funcname, int opt);
+    static int check_retval(void* returnvalue, const char* funcname, int opt);
+
 public:
-//    sdsolver() : solver() {}
+    //    sdsolver() : solver() {}
     // sdsolver(model * m) : solver(m) { }
 
-//    void setDeltaT(double deltat) { _deltat = deltat; }
-//    double getDeltaT() { return _deltat; }
+    //    void setDeltaT(double deltat) { _deltat = deltat; }
+    //    double getDeltaT() { return _deltat; }
 
-    double getY(int index) { return Ith(y,index+1); }
-    double getT() { return (double) t;}
+    double getY(int index) { return Ith(y, index + 1); }
+    double getT() { return (double)t; }
 
-    sdsolver(component * m, double INITIAL_CONDITIONS[], double reltol1, double abstol1[], double * deltat);
+    sdsolver(component* m, double INITIAL_CONDITIONS[], double reltol1, double abstol1[], double* deltat);
 
-    static int RHS(realtype t, N_Vector y, N_Vector ydot, void *user_data);
+    static int RHS(realtype t, N_Vector y, N_Vector ydot, void* user_data);
 
     void solveStep(double tout);
-
 };
 
 #endif /* sdsolver_hpp */
